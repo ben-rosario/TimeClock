@@ -35,7 +35,7 @@ struct DateView: View {
         return VStack {
             List {
                 ForEach(timecardArray, id: \.self) { timecard in
-                    Section(employeeModel.getName(id: timecard.getId(), withId: true)) {
+                    Section("\(timecard.employee.name) - \(timecard.employee.employeeId)") {
                         
                         ForEach(0..<timecard.numOfEvents(), id: \.self) { index in
                             // For both of the scenarios I use the Time.dateView function

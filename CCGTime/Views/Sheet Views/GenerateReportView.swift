@@ -30,7 +30,8 @@ struct GenerateReportView: View {
     var body: some View {
         NavigationView {
             if waitingForReport == true && departmentModel.reportIsCompleted() == false {
-                ProgressView("Generating Report...")
+                //if departmentModel.reportIsInitialized() == true {}
+                ProgressView("Generating Report...", value: departmentModel.report?.progress, total: 1.0)
             } else {
                 Form {
                     DatePicker(
@@ -91,13 +92,13 @@ struct GenerateReportView: View {
                     .alert(Text("Error"), isPresented: $showIllegalCharAlert) {} message: {
                         Text("Invalid Report Title: Title cannot contain any of the following characters:  /  :  *  ?  \"  >  <  |")
                     }
+                    .alert(Text("Error"), isPresented: $showDepartmentAlert) {} message: {
+                        Text("Please select a department")
+                    }
+                    .alert(Text("Error"), isPresented: $showDateRangeAlert) {} message: {
+                        Text("Starting date must be before end date")
+                    }
                 )
-                .alert(Text("Error"), isPresented: $showDepartmentAlert) {} message: {
-                    Text("Please select a department")
-                }
-                .alert(Text("Error"), isPresented: $showDateRangeAlert) {} message: {
-                    Text("Starting date must be before end date")
-                }
             }
         }
     }

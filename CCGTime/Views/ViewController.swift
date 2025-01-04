@@ -22,7 +22,7 @@ struct ViewController: View {
                 .environmentObject(employeeModel)
                 .tabItem {
                     Image(systemName: "clock")
-                        Text("Clock In")
+                        Text("Timecards")
                 }
             
             ManagerView()

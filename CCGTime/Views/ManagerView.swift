@@ -34,9 +34,7 @@ struct ManagerView: View {
     @State private var selectedEndDate = Date()
     @State private var selectedDepartment: String = ""
     
-    @StateObject  var authModel = AuthModel()
-    
-    init() {}
+    @StateObject var authModel = AuthModel()
     
     var employeeSection: some View {
         Section("Employees") {

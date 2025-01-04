@@ -85,7 +85,9 @@ struct AddEmployeeView: View {
                 },
                 trailing: Button("Create") {
                     if formIsValid() {
-                        employeeModel.createNewEmployee(firstName: employeeFirstname, lastName: employeeLastname, id: employeeNumber, wage: employeeWage, department: employeeDepartment)
+                        let newEmp = employeeModel.createNewEmployee(firstName: employeeFirstname, lastName: employeeLastname, id: employeeNumber, wage: employeeWage, department: employeeDepartment)
+                        
+                        departmentModel.allEmployees[employeeNumber.value] = newEmp
                         
                         creationSuccessAlert = true
                         

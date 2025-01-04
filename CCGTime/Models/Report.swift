@@ -9,6 +9,7 @@
 
 import Foundation
 import xlsxwriter
+import Combine
 import SwiftUI
 
 
@@ -35,6 +36,7 @@ extension Date {
 class Report {
     
     @Published var completed = false
+    @Published var progress: Double
     
     public let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     
@@ -51,9 +53,10 @@ class Report {
     private var weeklyTitleFormat: Format
     private var reportDataFormat: Format
     private var reportHeaderDateFormat: Format
-    private var reportNumberDataFormat: Format
+    private var reportMoneyFormat: Format
     private var reportGrandTotalTitleFormat: Format
     private var reportSumFormat: Format
+    private var reportMoneyFormatBold: Format
     
     private var row = 0
     private var col = 0
@@ -69,6 +72,8 @@ class Report {
         self.dept = dept
         self.deptModel = deptModel
         self.fileName = "\(name).xlsx"
+        self.completed = false
+        self.progress = 0.0
         
         // Create workbook and worksheet
         self.wb = Workbook(name: fileName)
@@ -80,9 +85,10 @@ class Report {
         self.reportHeaderFormat = wb.addFormat()
         self.reportHeaderDateFormat = wb.addFormat()
         self.reportDataFormat = wb.addFormat()
-        self.reportNumberDataFormat = wb.addFormat()
+        self.reportMoneyFormat = wb.addFormat()
         self.reportGrandTotalTitleFormat = wb.addFormat()
         self.reportSumFormat = wb.addFormat()
+        self.reportMoneyFormatBold = wb.addFormat()
         
         self.create()
         await self.write()
@@ -99,34 +105,36 @@ class Report {
         // Report Title Formatting (e.g. 'ExampleDepartment Report')
         reportTitleFormat.bold()
         reportTitleFormat.font(size: 20)
-        reportTitleFormat.font(name: "Arial")
+        reportTitleFormat.font(name: "Helvetica")
         
         // Weekly Title Formatting (e.g. 'Report starting 10/20/2020')
         weeklyTitleFormat.bold()
         weeklyTitleFormat.font(size: 14)
         weeklyTitleFormat.font(name: "Arial")
         
-        // Report Header Formatting (e.g. 'Employee Name')
+        // Report Header Formatting for first row of each week's report
         reportHeaderFormat.bold()
         reportHeaderFormat.font(size: 12)
         reportHeaderFormat.font(name: "Arial")
-        
-        // Report Header Date Formatting (e.g. '12/31/2000')
-        reportHeaderDateFormat.bold()
-        reportHeaderDateFormat.font(size: 12)
-        reportHeaderDateFormat.font(name: "Arial")
-        reportHeaderDateFormat.align(horizontal: .center)
+        reportHeaderFormat.align(horizontal: .center)
         
         // Report Data Formatting (e.g. '8.0')
         reportDataFormat.font(size: 11)
         reportDataFormat.font(name: "Arial")
         reportDataFormat.border(style: .thin)
         
-        // Report Number Data Formatting
-        reportNumberDataFormat.font(size: 11)
-        reportNumberDataFormat.font(name: "Arial")
-        reportNumberDataFormat.border(style: .thin)
-        reportNumberDataFormat.set(num_format: "$0.00")
+        // Report Money Formatting (e.g. '$1.00')
+        reportMoneyFormat.font(size: 11)
+        reportMoneyFormat.font(name: "Arial")
+        reportMoneyFormat.border(style: .thin)
+        reportMoneyFormat.set(num_format: "$0.00")
+        
+        // Same as reportMoneyFormat, but bold
+        reportMoneyFormatBold.font(size: 11)
+        reportMoneyFormatBold.font(name: "Arial")
+        reportMoneyFormatBold.border(style: .thin)
+        reportMoneyFormatBold.set(num_format: "$0.00")
+        reportMoneyFormatBold.bold()
         
         // Report Grand Total Title Formatting
         reportGrandTotalTitleFormat.bold()
@@ -135,6 +143,11 @@ class Report {
         reportGrandTotalTitleFormat.border(style: .thin)
         
         // Report Sum Total Formatting
+        reportSumFormat.bold()
+        reportSumFormat.font(size: 11)
+        reportSumFormat.font(name: "Arial")
+        reportSumFormat.border(style: .thin)
+        reportSumFormat.align(horizontal: .center)
         
         // Change the directory to the app's default Documents path
         FileManager.default.changeCurrentDirectoryPath(documentsUrl.path)
@@ -153,6 +166,12 @@ class Report {
         
         var weekStartDate = startDate
         var dateString = ""
+        
+        let components = Calendar.current.dateComponents([.weekOfYear], from: startDate, to: endDate)
+        let numWeeks = components.weekOfYear!
+        print("numWeeks: \(numWeeks)")
+        let progressIncrements = 1.0/Double(numWeeks)
+        
         // While-loop to write the weekly graph
         while weekStartDate <= endDate {
             row+=4
@@ -169,11 +188,14 @@ class Report {
                 let incrementAmt = 8-weekStartDate.dayNumberOfWeek()!
                 weekStartDate = Calendar.current.date(byAdding: .day, value: incrementAmt, to: weekStartDate)!
             }
+            print("Progress: \(self.progress)")
+            self.progress += progressIncrements
         }
     }
     
     private func save() {
         wb.close()
+        self.progress = 1.0
         self.completed = true
         self.openFilesApp(to: documentsUrl)
     }
@@ -212,7 +234,7 @@ class Report {
         self.ws.write(.string("Total Hrs Worked"), [row,col], format: reportHeaderFormat)
         col+=1
         
-        self.ws.write(.string("Wage ($/hr)"), [row,col], format: reportHeaderFormat)
+        self.ws.write(.string("Wage"), [row,col], format: reportHeaderFormat)
         col+=1
         
         self.ws.write(.string("Total Pay"), [row,col], format: reportHeaderFormat)
@@ -266,7 +288,7 @@ class Report {
         col+=1
         currentCol = self.findColLetter(col: col)
         let formula = "=SUM(\(currentCol)\(firstRow):\(currentCol)\(lastRow))"
-        ws.write(.formula(formula), [row,col], format: reportSumFormat)
+        ws.write(.formula(formula), [row,col], format: reportMoneyFormatBold)
         
         col-=(4+dates)
         row+=3
@@ -277,13 +299,13 @@ class Report {
         let initialRow = row
         
         if emps.isEmpty {
-            ws.write(.number(0), [row,col], format: reportNumberDataFormat)
+            ws.write(.number(0), [row,col], format: reportMoneyFormat)
         } else {
             for _ in emps {
                 let hrsColumn = self.findColLetter(col: col - 2)
                 let wageColumn = self.findColLetter(col: col - 1)
                 let formula = "=(\(hrsColumn)\(row+1)*\(wageColumn)\(row+1))"
-                ws.write(.formula(formula), [row,col], format: reportNumberDataFormat)
+                ws.write(.formula(formula), [row,col], format: reportMoneyFormat)
                 row+=1
             }
         }
@@ -352,8 +374,6 @@ class Report {
     private func writeWorkedHours(for employees: [Employee], on givenDate: Date, days: Int) async {
         if givenDate > endDate { return }
         
-        print("writeWorkedHours(): days = \(days)")
-        
         let initialCol = col
         let initialRow = row
         
@@ -369,7 +389,6 @@ class Report {
                 
                 for employee in employees {
                     let hoursWorked = await deptModel.hoursWorked(for: employee, on: currentDate)
-                    print("\(employee.name) worked \(hoursWorked) on \(currentDate.description)")
                     ws.write(.number(hoursWorked), [row,col], format: reportDataFormat)
                     row+=1
                 }
@@ -404,7 +423,7 @@ class Report {
             // shortDate: '12/31/2000'
             let shortDate = dateFormat.string(from: currentDate)
             
-            ws.write(.string("\(dayName) \(shortDate)"), [row,col], format: reportHeaderDateFormat)
+            ws.write(.string("\(dayName) \(shortDate)"), [row,col], format: reportHeaderFormat)
             
             //advance currentDate object by 1 day
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!

@@ -88,6 +88,14 @@ class DepartmentModel: ObservableObject {
         }
     }
     
+    public func getReportProgress() ->  Double {
+        if let r = self.report {
+            return r.progress
+        } else {
+            return 0.0
+        }
+    }
+    
     public func simpleDate(_ date: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd"
@@ -306,7 +314,7 @@ class DepartmentModel: ObservableObject {
     }
     
     // Converts Int32 in "YYYYMMDD" format to a Date object with the same timestamp
-    private func dateFromInt32(_ dateInt: Int32) -> Date? {
+    public func dateFromInt32(_ dateInt: Int32) -> Date? {
         let intString = String(dateInt) // Convert Int32 to String
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd" // Match the format
@@ -314,7 +322,7 @@ class DepartmentModel: ObservableObject {
     }
 
     // Converts Date Object to an Int32 in the "YYYYMMDD" format
-    private func int32FromDate(_ date: Date) -> Int32 {
+    public func int32FromDate(_ date: Date) -> Int32 {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         
@@ -325,7 +333,7 @@ class DepartmentModel: ObservableObject {
         return Int32(year * 10000 + month * 100 + day)
     }
     
-    private func stringFromDate(_ date: Date) -> String{
+    public func stringFromDate(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd" 
         return dateFormatter.string(from: date)
@@ -361,10 +369,7 @@ class DepartmentModel: ObservableObject {
         for employeeList in employeesWorkedThisWeek {
             for employee in employeeList {
                 if !employeesWorked.contains(employee) {
-                    print("new employee added to final: \(employee)")
                     employeesWorked.append(employee)
-                } else {
-                    print("Found Duplicate")
                 }
             }
         }
@@ -387,8 +392,9 @@ class DepartmentModel: ObservableObject {
         
         do {
             let querySnapshot = try await employeesRef.getDocuments()
-            for emp in querySnapshot.documents {
-                let empData = emp.data()
+            for tc in querySnapshot.documents {
+                let timecard = tc.data()
+                let empData: [String:Any] = timecard["employee"] as! [String : Any]
                 
                 let newEmployee = Employee(firstName: empData["firstName"] as! String,
                                            lastName: empData["lastName"] as! String,
@@ -416,10 +422,18 @@ class DepartmentModel: ObservableObject {
     }
     
     public func reportIsCompleted() -> Bool {
-        if self.report == nil {
-            return false
+        if let r = report {
+            return r.completed
         } else {
-            return report!.completed
+            return false
+        }
+    }
+    
+    public func reportIsInitialized() -> Bool {
+        if let _ = report {
+            return true
+        } else {
+            return false
         }
     }
     
@@ -481,9 +495,71 @@ class DepartmentModel: ObservableObject {
             
             
         } catch (let error) {
-            print("hrsWorked Error: \(error.localizedDescription)")
+            // TODO: fix this annoying shit below
+            // The data couldn't be read because it is missing
+            print("Error: \(error.localizedDescription)")
             return 0.0
         }
-         
+    }
+    
+    public func hasCorrectInfo(empId id: String, dept givenDept: String) -> Bool {
+        // First check if any employee has this ID
+        if let e = self.allEmployees[id] {
+            // If so, check that the Employee is also assigned to the given department
+            if e.department == givenDept {
+                return true
+            }
+        }
+        return false
+    }
+    
+    @Published var currentTimecard: EmployeeTimecard?
+    public func getTimecard(emp: Employee, dateStr: String) async {
+        let timecardsRef = db.collection("users")
+                        .document(uid)
+                        .collection("departments")
+                        .document(emp.department)
+                        .collection("dates")
+                        .document(dateStr)
+                        .collection("times")
+                        
+        let timecardRef = timecardsRef.document(emp.employeeId)
+        
+        do {
+            let timecard = try await timecardRef.getDocument(as: EmployeeTimecard.self)
+            self.currentTimecard = timecard
+        } catch {
+            // Timecard doesn't exist, creating one now
+            let newTimecard = EmployeeTimecard(id: emp.employeeId, emp: emp)
+            
+            // Writing new timecard to Firestore
+            let _ = self.addTimecard(timecard: newTimecard, date: Date())
+        }
+    }
+    
+    // Returns true if timecard was added, and false if there was an error.
+    // Creates/Overwrites the timecard on Firestore
+    func addTimecard(timecard tc: EmployeeTimecard, date: Date) -> Bool{
+        let dateStr = self.stringFromDate(date)
+        
+        let datesRef = db.collection("users")
+                        .document(uid)
+                        .collection("departments")
+                        .document(tc.employee.department)
+                        .collection("dates")
+                        .document(dateStr)
+                        
+        datesRef.setData(["visible":true])
+        
+        let timecardsRef = datesRef.collection("times")
+        
+        do {
+            try timecardsRef.document(tc.employee.employeeId).setData(from: tc)
+            self.currentTimecard = tc
+            return true
+        } catch (let error){
+            print("Error adding new timecard to Firestore: \(error)")
+            return false
+        }
     }
 }

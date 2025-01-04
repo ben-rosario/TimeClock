@@ -58,6 +58,12 @@ class EmployeeModel: ObservableObject {
         }
     }
     
+    public func stringFromDate(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd"
+        return dateFormatter.string(from: date)
+    }
+    
     func getDept(id: NumbersOnly) -> String {
         let empId = id.value
         let employee = employees[empId]
@@ -93,7 +99,7 @@ class EmployeeModel: ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd"
         let todaysDateString = dateFormatter.string(from: Date.now)
-        
+    
         let docRef = db.collection("users")
             .document(uid)
             .collection("departments")
@@ -153,168 +159,13 @@ class EmployeeModel: ObservableObject {
         }
     }
     
-    /*
-     As of now, func clockIn() will assume that the employee has already clocked out,
-     and will always generate a timeIn stamp
-     That means it is important to check that the employee has already clocked out
-     before you call this function!
-     */
-    func clockIn(id: String, department: String) {
-        
-        if (lastTimeClocked == staticDate && lastIdClocked == "" ) {
-            lastTimeClocked = Date.init()
-            lastIdClocked = id
-        }
-        else if (lastIdClocked != id) {
-            let elapsed = Date.now.timeIntervalSince(lastTimeClocked)
-            let duration = Int(elapsed)
-            
-            if (duration < 5) {
-                Alert.message("Error", "Too many attempts. Please try again in a moment.")
-                return
-            }
-            
-        }
-        else {
-            let elapsed = Date.now.timeIntervalSince(lastTimeClocked)
-            let duration = Int(elapsed)
-            
-            if (duration < 61) {
-                let cooldownTime = String(61 - duration)
-                Alert.message("Error", "ID \(id) has recently clocked out.\nPlease wait \(cooldownTime) seconds to clock in.")
-                return
-            }
-            
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
-        let todaysDateString = dateFormatter.string(from: Date.now)
-        
-        db.collection("users")
-            .document(uid)
-            .collection("departments")
-            .document(department)
-            .collection("dates")
-            .document(todaysDateString).setData(["visible" : true])
-        
-        let timecardDocRef = db.collection("users")
-            .document(uid)
-            .collection("departments")
-            .document(department)
-            .collection("dates")
-            .document(todaysDateString)
-            .collection("times")
-            .document(id)
-        
-        timecardDocRef.getDocument(as: EmployeeTimecard.self) { result in
-            switch result {
-                
-            case .success(let timecard):
-                if (timecard.exists) {
-                    print("Timecard already exists")
-                    timecardDocRef.updateData([
-                        "timecardEvents" : FieldValue.arrayUnion([Date.now])
-                    ])
-                } else {
-                    // This path might never be reached? describing as fatal error
-                    print("FATAL ERROR: timecard was instantiated but the exists attribute is false?")
-                }
-                
-            case .failure(let error):
-                print("Expected Error: \(error)")
-                // This will ALWAYS have a failure case if the document does not exist yet
-                print("Timecard doesn't exist, creating one now...")
-                // Create new timecard and set data in Firebase
-                let employee = self.employees[id]!
-                let newTimecard: EmployeeTimecard = EmployeeTimecard(id: id, dept: department, firstName: employee.firstName, lastName: employee.lastName, name: employee.name, wage: employee.wage)
-                
-                do {
-                    try timecardDocRef.setData(from: newTimecard)
-                    print("Set data from newTimecard")
-                } catch {
-                    print("Error occurred while trying to clock in: \(error)")
-                }
-                
-                // Update new timecard with clock in data (should be the first time event in the timecard)
-                timecardDocRef.updateData([
-                    "timecardEvents" : FieldValue.arrayUnion([Date.now])
-                ])
-                self.lastTimeClocked = Date.init()
-                self.lastIdClocked = id
-                
-            } // end switch case
-            
-        }
-    }
+    func clockIn(id: String, department: String) {}
     
-    /*
-     As of now, func clockOut() will assume that the employee has already clocked in,
-     and will always generate a timeOut stamp
-     That means it is important to check that the employee has already clocked in
-     before you call this function!
-     */
-    func clockOut(id: String, department: String) {
-        
-        if (lastTimeClocked == staticDate && lastIdClocked == "" ) {
-            lastTimeClocked = Date.init()
-            lastIdClocked = id
-        }
-        else if (lastIdClocked != id) {
-            let elapsed = Date.now.timeIntervalSince(lastTimeClocked)
-            let duration = Int(elapsed)
-            
-            if (duration < 5) {
-                Alert.message("Error", "Too many attempts. Please try again in a moment.")
-                return
-            }
-            
-        }
-        else {
-            
-            let elapsed = Date.now.timeIntervalSince(lastTimeClocked)
-            let duration = Int(elapsed)
-            if (duration < 61) {
-                let cooldownTime = String(61 - duration)
-                Alert.message("Error", "ID \(id) has recently clocked in.\nPlease wait \(cooldownTime) seconds to clock out.")
-                return
-            }
-            
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
-        let todaysDateString = dateFormatter.string(from: Date.now)
-        
-        db.collection("users")
-            .document(uid)
-            .collection("departments")
-            .document(department)
-            .collection("dates")
-            .document(todaysDateString).setData(["visible" : true])
-        
-        let timecardDocRef = db.collection("users")
-            .document(uid)
-            .collection("departments")
-            .document(department)
-            .collection("dates")
-            .document(todaysDateString)
-            .collection("times")
-            .document(id)
-        
-        do {
-            
-            timecardDocRef.updateData([
-                "timecardEvents" : FieldValue.arrayUnion([Date.now])
-            ])
-            self.lastTimeClocked = Date.init()
-            self.lastIdClocked = id
-        }
-    }
+    func clockOut(id: String, department: String) {}
     
     
-    
-    func createNewEmployee(firstName: String, lastName: String, id: NumbersOnly, wage: FloatsOnly, department: String) {
+    // TODO: fix error handling in this and AddEmployeeView()
+    func createNewEmployee(firstName: String, lastName: String, id: NumbersOnly, wage: FloatsOnly, department: String) -> Employee {
         
         let docRef = db.collection("users")
             .document(uid)
@@ -331,9 +182,11 @@ class EmployeeModel: ObservableObject {
             )
             
             try docRef.setData(from: employee)
+            return employee
         }
         catch {
             print("Error when trying to encode Employee: \(error)")
+            return Employee(firstName: "", lastName: "", wage: 0, department: "", employeeId: "")
         }
     }
     
