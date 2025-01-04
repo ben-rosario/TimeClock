@@ -27,11 +27,16 @@ struct EmployeeTimecardView: View {
         self.employee = tc.employee
         self._showSheet = showSheet
         
+        // Set colors for gradient
+        let color1 = Color(hex: 0x12C2E9)
+        let color2 = Color(hex: 0xC471ED)
+        let color3 = Color(hex: 0xF64F59)
+        
         self.titleText = Text("Hi \(employee.firstName),")
             .font(.system(.largeTitle, design: .rounded))
             .fontWeight(.bold)
             .foregroundStyle(LinearGradient(
-                colors: [.red, .orange, .yellow],
+                colors: [color1, color2, color3],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing)
             )
@@ -40,14 +45,16 @@ struct EmployeeTimecardView: View {
     var displayHours: some View {
         if timecard.timecardEvents.isEmpty == true {
             Text("You have not clocked in today.")
-                .bold()
                 .font(.title2)
+                .fontWeight(.semibold)
         } else if timecard.isClockedIn() != true {
-            Text("You worked \(timecard.getShiftLength()) today. \nYou have been clocked out for \(timecard.getTimeClockedOut()).")
+            Text("You worked \(timecard.getShiftLength()) today. \n\nYou have been clocked out for \(timecard.getTimeClockedOut()).")
                 .font(.title2)
+                .fontWeight(.semibold)
         } else {
-            Text("You have been working for \(timecard.getShiftLength()) today.")
+            Text("You have been working for \(timecard.getShiftLength()).")
                 .font(.title2)
+                .fontWeight(.semibold)
         }
     }
     
@@ -98,25 +105,24 @@ struct EmployeeTimecardView: View {
     var body: some View {
         NavigationView {
             VStack {
+                Spacer(minLength: 5)
                 displayHours
                     .padding(.all)
                 Spacer(minLength: 20)
                 displayClockInOutButtons
-                    .padding(.top)
+                    
+                    //.padding(.top)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle(titleText)
-            /*.navigationBarItems(
-                leading: Button("Close Timecard") {
-                    self.showSheet = false
-                }
-            ) */
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("Close") {
                         self.showSheet = false
                     }
                     .fontWeight(.bold)
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    titleText
                 }
                 
             }
@@ -127,6 +133,18 @@ struct EmployeeTimecardView: View {
                 Text("There was an error clocking out. Please try again.")
             }
         }
+    }
+}
+
+extension Color {
+    init(hex: Int, opacity: Double = 1) {
+        self.init(
+            .sRGB,
+            red: Double((hex >> 16) & 0xFF) / 255,
+            green: Double((hex >> 08) & 0xFF) / 255,
+            blue: Double((hex >> 00) & 0xFF) / 255,
+            opacity: opacity
+        )
     }
 }
 

@@ -2,7 +2,7 @@
 //  ManagerView.swift
 //  CCGTime
 //
-//  Created by Ben Rosario on 5/25/22.
+//  Created by Ben Rosario on 10/14/24.
 //
 
 import SwiftUI
@@ -35,6 +35,10 @@ struct ManagerView: View {
     @State private var selectedDepartment: String = ""
     
     @StateObject var authModel = AuthModel()
+    
+    // Set Colors for button gradient
+    private let color1 = Color(hex: 0x3494E6)
+    private let color2 = Color(hex: 0xEC6EAD)
     
     var employeeSection: some View {
         Section("Employees") {
@@ -103,9 +107,9 @@ struct ManagerView: View {
                 VStack(alignment: .center) {
                     
                     List {
-                        employeeSection
                         currentDepartmentsSection
                         archivedDepartmentsSection
+                        employeeSection
                     }
                     // Confirmation dialogue for delete button
                     .confirmationDialog(
@@ -156,17 +160,23 @@ struct ManagerView: View {
                         selectedDepartment: $selectedDepartment,
                         earliestDate: departmentModel.earliestDate!
                     )
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
                 }
                 .sheet(isPresented: $showAddNewEmployeeSheet) {
                     AddEmployeeView(showAddNewEmployeeSheet: $showAddNewEmployeeSheet)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
                 }
                 .sheet(isPresented: $showAccountSettingsSheet) {
                     AccountView(showAccountSettingsSheet: $showAccountSettingsSheet)
+                        .presentationDetents([.large, .medium])
+                        .presentationDragIndicator(.visible)
                 }
                 .navigationTitle("Management")
                 .toolbar {
                     ToolbarItemGroup() {
-                        Menu("Options") {
+                        Menu("Tools") {
                             
                             // Create New Department button
                             Button("Create New Department", systemImage: "note.text.badge.plus") {
@@ -194,11 +204,16 @@ struct ManagerView: View {
 
                 
             } else {
-                Button("Unlock Manager View", action: authModel.authenticate)
+                Button(action: authModel.authenticate, label: {
+                    Text("Unlock Manager View")
+                        .font(.system(.title2))
+                })
                     .padding()
                     .background(.blue)
                     .foregroundStyle(.white)
                     .clipShape(.capsule)
+                    
+                    
             }
         }
         .onDisappear(perform: authModel.lock)

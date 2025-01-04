@@ -11,6 +11,8 @@ struct GenerateReportView: View {
     
     @EnvironmentObject var departmentModel: DepartmentModel
     
+    @FocusState private var kbFocused: Bool
+    
     @State private var reportUrl: URL?
     @State private var showDepartmentAlert = false
     @State private var showDateRangeAlert = false
@@ -33,62 +35,13 @@ struct GenerateReportView: View {
                 //if departmentModel.reportIsInitialized() == true {}
                 ProgressView("Generating Report...", value: departmentModel.report?.progress, total: 1.0)
             } else {
-                Form {
-                    DatePicker(
-                        "Start Date",
-                        selection: $selectedStartDate,
-                        in: earliestDate...Date(),
-                        displayedComponents: [.date]
-                    )
-                    
-                    DatePicker(
-                        "End Date",
-                        selection: $selectedEndDate,
-                        in: selectedStartDate...Date(),
-                        displayedComponents: [.date]
-                    )
-                    
-                    Picker("Select Department", selection: $selectedDepartment) {
-                        Text("Select a Department").tag("")
-                        ForEach(departmentModel.deptStrings, id: \.self) { dept in
-                            Text(dept)
-                        }
-                    }
-                    
-                    TextField(
-                        "Name of file",
-                        text: $selectedReportTitle
-                    )
-                }
+                generateReportForm
                 .navigationTitle("Generate Report")
                 .navigationBarItems(
                     leading: Button("Cancel") {
                         showGenerateReportAlert = false
                     },
-                    trailing: AsyncButton( action: {
-                        // Check if date range is logical
-                        if selectedStartDate > selectedEndDate {
-                            showDateRangeAlert = true
-                        } else {
-                            // Check if a department was selected
-                            if selectedDepartment.isEmpty {
-                                showDepartmentAlert = true
-                            } else {
-                                // Make sure the given name doesn't have illegal characters using regex
-                                if selectedReportTitle.contains(/[\/:*?\"<>|]/) {
-                                    self.showIllegalCharAlert = true
-                                } else {
-                                    await departmentModel.createReport(
-                                                   start: selectedStartDate,
-                                                   end: selectedEndDate,
-                                                   for: selectedDepartment,
-                                                   name: selectedReportTitle
-                                                 )
-                                    self.waitingForReport = true
-                                }
-                            }
-                        }
-                    }, label: { Text("Generate") })
+                    trailing: generateReportButton
                     .alert(Text("Error"), isPresented: $showIllegalCharAlert) {} message: {
                         Text("Invalid Report Title: Title cannot contain any of the following characters:  /  :  *  ?  \"  >  <  |")
                     }
@@ -101,6 +54,72 @@ struct GenerateReportView: View {
                 )
             }
         }
+    }
+    
+    var generateReportForm: some View {
+        Form {
+            DatePicker(
+                "Start Date",
+                selection: $selectedStartDate,
+                in: earliestDate...Date(),
+                displayedComponents: [.date]
+            )
+            
+            DatePicker(
+                "End Date",
+                selection: $selectedEndDate,
+                in: selectedStartDate...Date(),
+                displayedComponents: [.date]
+            )
+            
+            Picker("Department", selection: $selectedDepartment) {
+                Text("Select a Department").tag("")
+                ForEach(departmentModel.deptStrings, id: \.self) { dept in
+                    Text(dept)
+                }
+            }
+            
+            TextField(
+                "Name of file",
+                text: $selectedReportTitle
+            )
+            .focused($kbFocused)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Close") {
+                        kbFocused = false
+                    }
+                }
+            }
+        }
+    }
+    
+    var generateReportButton: some View {
+        AsyncButton( action: {
+            // Check if date range is logical
+            if selectedStartDate > selectedEndDate {
+                showDateRangeAlert = true
+            } else {
+                // Check if a department was selected
+                if selectedDepartment.isEmpty {
+                    showDepartmentAlert = true
+                } else {
+                    // Make sure the given name doesn't have illegal characters using regex
+                    if selectedReportTitle.contains(/[\/:*?\"<>|]/) {
+                        self.showIllegalCharAlert = true
+                    } else {
+                        await departmentModel.createReport(
+                                       start: selectedStartDate,
+                                       end: selectedEndDate,
+                                       for: selectedDepartment,
+                                       name: selectedReportTitle
+                                     )
+                        self.waitingForReport = true
+                    }
+                }
+            }
+        }, label: { Text("Generate") })
     }
 }
 

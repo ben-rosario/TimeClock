@@ -2,7 +2,7 @@
 //  SignupView.swift
 //  CCGTime
 //
-//  Created by ben on 4/8/24.
+//  Created by ben on 10/17/24.
 //
 
 import SwiftUI
@@ -53,11 +53,14 @@ struct SignupView: View {
                 
                 
                 Button("Create Account") {
-                    // TO-DO: Check ALL fields before calling signUp function
-                    if (confirmpassword == password) {
-                        session.signUp(email: email, password: password, firstName: firstName, lastName: lastName)
-                    } else {
+                    // TODO: Check ALL fields before calling signUp function
+                    if (confirmpassword != password) {
                         Alert.error("Passwords do not match!")
+                    }
+                    // TODO: add validData(), or any other method of checking validity
+                    // else if validData() == false {}
+                    else {
+                        session.signUp(email: email, password: password, firstName: firstName, lastName: lastName)
                     }
                 }
                 

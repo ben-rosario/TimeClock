@@ -2,7 +2,7 @@
 //  User.swift
 //  CCGTime
 //
-//  Created by ben on 4/7/24.
+//  Created by ben on 11/10/24.
 //
 
 import Foundation
@@ -13,7 +13,7 @@ import Combine
 
 
 
-class SessionStore: ObservableObject {
+@MainActor class SessionStore: ObservableObject {
     
     @Published var departmentModel: DepartmentModel?
     @Published var employeeModel: EmployeeModel?

@@ -1,10 +1,9 @@
 //  EmployeeTimecard.swift
 //  CCGTime
 //
-//  Created by ben on 7/17/22.
+//  Created by ben on 10/17/24.
 //
-//  Each employee should have their own EmployeeTimecard struct
-//  for each day they work.
+//
 
 import Foundation
 import FirebaseFirestoreSwift
@@ -16,17 +15,12 @@ struct EmployeeTimecard: Codable, Hashable {
     @DocumentID var id: String?
     var employee: Employee
     var timecardEvents: [Date]
-    var exists: Bool
     var shiftLength: Double = 0.0
-    // This var will only be false if the employee has not clocked in even once
-    var hasClockedIn: Bool
     
     init(id: String, emp: Employee) {
         self.id = id
         self.employee = emp
-        self.exists = true
         self.timecardEvents = []
-        self.hasClockedIn = false
     }
     
     /* Required code to make the EmployeeTimecard struct Codable and Hashable */
@@ -34,9 +28,7 @@ struct EmployeeTimecard: Codable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case employee
         case timecardEvents
-        case exists
         case shiftLength
-        case hasClockedIn
     }
     
     public func numOfEvents() -> Int {
@@ -52,21 +44,19 @@ struct EmployeeTimecard: Codable, Hashable {
         }
     }
     
-    public mutating func clockIn(deptModel: DepartmentModel) -> Bool {
+    @MainActor public mutating func clockIn(deptModel: DepartmentModel) -> Bool {
         self.timecardEvents.append(Date())
-        if deptModel.addTimecard(timecard: self, date: Date()) {
-            if hasClockedIn == false {
-                self.hasClockedIn = true
-            }
-            return true
-        } else {
+        
+        if deptModel.addTimecard(timecard: self, date: Date()) { return true }
+        
+        else {
             print("Error: Failed to upload updated timecard to Firestore")
             return false
         }
         
     }
     
-    public mutating func clockOut(deptModel: DepartmentModel) -> Bool {
+    @MainActor public mutating func clockOut(deptModel: DepartmentModel) -> Bool {
         let timeClockedIn = self.timecardEvents.last!
         
         self.timecardEvents.append(Date())

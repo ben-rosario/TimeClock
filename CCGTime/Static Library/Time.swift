@@ -2,7 +2,7 @@
 //  Time.swift
 //  CCGTime
 //
-//  Created by Ben on 5/12/23.
+//  Created by Ben on 10/17/24.
 //
 //  Time class to be used for displaying time in different formats
 

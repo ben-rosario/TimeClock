@@ -2,7 +2,7 @@
 //  DateView.swift
 //  CCGTime
 //
-//  Created by ben on 7/16/22.
+//  Created by ben on 10/30/24.
 //
 
 import SwiftUI
@@ -41,12 +41,11 @@ struct DateView: View {
                             // For both of the scenarios I use the Time.dateView function
                             // to present the dates in the most readable format for users
                             if (index % 2 == 0) {
-                                Text("**Clock-In:** \(Time.dateView(timecard.timecardEvents[index]))")
+                                Text("**Clocked In |** \(Time.dateView(timecard.timecardEvents[index]))")
                             } else {
-                                Text("**Clock-Out:** \(Time.dateView(timecard.timecardEvents[index]))")
-                                Text("**Shift Length:** \(Time.distanceBetween(first: timecard.timecardEvents[index - 1], last: timecard.timecardEvents[index]))")
+                                Text("**Clocked Out |** \(Time.dateView(timecard.timecardEvents[index]))")
+                                Text("**Total Shift Length: \(Time.distanceBetween(first: timecard.timecardEvents[index - 1], last: timecard.timecardEvents[index]))**")
                                     .padding(.bottom)
-                                    .padding(.top)
                             }
                             
                         }

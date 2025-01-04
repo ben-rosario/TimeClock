@@ -2,7 +2,7 @@
 //  DepartmentModel.swift
 //  CCGTime
 //
-//  Created by Ben Rosario on 5/26/22.
+//  Created by Ben Rosario on 10/14/24.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import OrderedCollections
 
-class DepartmentModel: ObservableObject {
+@MainActor class DepartmentModel: ObservableObject {
     
     private var uid: String
     private var db: Firestore

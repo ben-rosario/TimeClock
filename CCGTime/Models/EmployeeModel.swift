@@ -2,14 +2,14 @@
 //  EmployeeModel.swift
 //  CCGTime
 //
-//  Created by ben on 7/16/22.
+//  Created by ben on 10/16/24.
 //
 
 import Foundation
 import FirebaseFirestore
 import SwiftUICore
 
-class EmployeeModel: ObservableObject {
+@MainActor class EmployeeModel: ObservableObject {
     
    /*
     * employeeNames structure - employeeNames[2201] = "Ben Rosario"
@@ -44,7 +44,6 @@ class EmployeeModel: ObservableObject {
                 let wage = employee.get("wage") as! Double
                 let department = employee.get("department") as! String
                 
-                
                 let fullName = "\(firstName) \(lastName)"
                 self.employeeNameStrings.append(fullName)
                 
@@ -73,13 +72,11 @@ class EmployeeModel: ObservableObject {
     }
     
     func getName(id: String, withId: Bool) -> String {
-        
-        let employee = employees[id]
         var fullName: String = ""
         
-        if employee != nil {
-            let firstName: String = employee!.firstName
-            let lastName: String = employee!.lastName
+        if let employee = employees[id] {
+            let firstName: String = employee.firstName
+            let lastName: String = employee.lastName
             
             if (withId) {
                 fullName = "\(firstName) \(lastName) (\(id))"
@@ -93,30 +90,6 @@ class EmployeeModel: ObservableObject {
         }
         
         return fullName
-    }
-    
-    func fetchTimecards(department: String, completion: @escaping (_ timecard: EmployeeTimecard) -> Void) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
-        let todaysDateString = dateFormatter.string(from: Date.now)
-    
-        let docRef = db.collection("users")
-            .document(uid)
-            .collection("departments")
-            .document(department)
-            .collection("dates")
-            .document(todaysDateString)
-        
-        docRef.getDocument(as: EmployeeTimecard.self) { result in
-            switch result {
-            case .success(let timecard):
-                // An EmployeeTimeCard was successfully initialized from the DocumentSnapshot.
-                completion(timecard)
-            case .failure(let error):
-                // An EmployeeTimeCard could not be initialized from the DocumentSnapshot.
-                print("Error decoding document: \(error.localizedDescription)")
-            }
-        }
     }
     
     /**

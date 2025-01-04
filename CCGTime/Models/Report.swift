@@ -224,7 +224,7 @@ class Report {
         self.writeEmployeeIds(week: beginningDate, employees: employeesWorked)
         col+=1
         
-        self.writeEmployeeNames(week: beginningDate, employees: employeesWorked)
+        await self.writeEmployeeNames(week: beginningDate, employees: employeesWorked)
         col+=1
         
         let firstDayCol=col
@@ -461,7 +461,7 @@ class Report {
         
     }
     
-    private func writeEmployeeNames(week date: Date, employees: [Employee]) {
+    @MainActor private func writeEmployeeNames(week date: Date, employees: [Employee]) {
         let initialRow = row
         
         ws.write(.string("Employee Name"), [row,col], format: reportHeaderFormat)
