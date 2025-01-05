@@ -101,7 +101,7 @@ import OrderedCollections
         dateFormatter.dateFormat = "yyyyMMdd"
         let newDate: Date = dateFormatter.date(from: date) ?? Date.distantPast
         
-        dateFormatter.dateFormat = "MMM d, yyyy"
+        dateFormatter.dateFormat = "MMM d yyyy"
         let simpleDateString: String = dateFormatter.string(from: newDate)
         
         return simpleDateString

@@ -79,6 +79,14 @@ struct EmployeeTimecard: Codable, Hashable {
     
     @MainActor public mutating func editTimecard(events: [Date], deptModel: DepartmentModel) throws {
         
+        if events.count == 1 {
+            // If there is only one Timecard event, the changed input will always be right
+            if !deptModel.addTimecard(timecard: self, date: events.first!) {
+                throw TimecardError.runtimeError("Error saving Timecard to Firestore")
+            }
+            return
+        }
+        
         for i in 1...events.count-1 {
             
             if events[i] < events[i-1] {
@@ -87,15 +95,19 @@ struct EmployeeTimecard: Codable, Hashable {
                 throw TimecardError.runtimeError("Timecard events cannot be in the future")
             }
         }
+        let edit = "Previous Timecard Events: \(timecardEvents)\nNew Timecard Events: \(events)"
         
         self.timecardEvents = events
         self.calculateShiftLength()
         
-        let _ = deptModel.addTimecard(timecard: self, date: events.first!)
+        self.timecardEdits.append(edit)
+        
+        if !deptModel.addTimecard(timecard: self, date: events.first!) {
+            throw TimecardError.runtimeError("Error saving Timecard to Firestore")
+        }
     }
     
     private mutating func calculateShiftLength() {
-        
         self.shiftLength = 0
         
         for i in 0...self.timecardEvents.count-1 {
@@ -108,7 +120,6 @@ struct EmployeeTimecard: Codable, Hashable {
                 self.shiftLength += shiftTimeInHours
             }
         }
-        
     }
     
     enum TimecardError: Error {
@@ -134,15 +145,12 @@ struct EmployeeTimecard: Codable, Hashable {
             return time
         }
         
-        let currentShiftLength = Date() - self.timecardEvents.last!
+        let currentShiftLengthInSeconds = Date().timeIntervalSince(self.timecardEvents.last!)
+        let currentShiftLengthInHours = currentShiftLengthInSeconds / 3600
         
-        let oldShiftLengthInHours = TimeInterval(self.shiftLength)
-        let oldShiftLengthInMinutes = oldShiftLengthInHours * 60
-        let oldShiftLengthInSeconds = oldShiftLengthInMinutes * 60
+        let totalShiftLength = self.shiftLength + currentShiftLengthInHours
         
-        let updatedShiftLength = currentShiftLength + oldShiftLengthInSeconds
-        
-        return updatedShiftLength
+        return totalShiftLength
     }
     
     // Returns Formatted String

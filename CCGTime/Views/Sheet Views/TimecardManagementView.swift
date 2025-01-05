@@ -18,7 +18,7 @@ struct TimecardManagementView: View {
     @State private var showFailureAlert = false
     @State private var showSuccessAlert = false
     @State private var isEditing = false
-    
+    @State private var previousEvents: [Date] = []
     @State var timecard: EmployeeTimecard
     
     private var name: String
@@ -88,6 +88,7 @@ struct TimecardManagementView: View {
             }
         } else {
             Button("Cancel") {
+                self.timecard.timecardEvents = previousEvents
                 self.isEditing = false
             }
         }
@@ -96,6 +97,7 @@ struct TimecardManagementView: View {
     var editButton: some View {
         if isEditing == false {
             Button(action: {
+                self.previousEvents = timecard.timecardEvents
                 self.isEditing = true
             }) {
                 Text("Edit")
@@ -104,12 +106,16 @@ struct TimecardManagementView: View {
         } else {
             Button(action: {
                 
-                do {
-                    try timecard.editTimecard(events: timecard.timecardEvents, deptModel: departmentModel)
-                    showSuccessAlert = true
+                if self.previousEvents != self.timecard.timecardEvents {
+                    do {
+                        try timecard.editTimecard(events: timecard.timecardEvents, deptModel: departmentModel)
+                        showSuccessAlert = true
+                        isEditing = false
+                    } catch {
+                        showFailureAlert = true
+                    }
+                } else {
                     isEditing = false
-                } catch {
-                    showFailureAlert = true
                 }
                 
             }) {
