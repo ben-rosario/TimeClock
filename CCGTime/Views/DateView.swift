@@ -18,7 +18,8 @@ struct DateView: View {
     private var date: String
     
     @State private var timecardArray: [EmployeeTimecard] = []
-    @State private var empName: String = ""
+    @State private var showTimecardManagementSheet: Bool = false
+    @State private var currentTimecard: EmployeeTimecard?
     
     init(dept: String, date: String) {
         self.dept = dept
@@ -27,34 +28,34 @@ struct DateView: View {
     
     var body: some View {
         
-        departmentModel.getTimes(dept: dept, date: date) { tcArray in
-            self.timecardArray = tcArray
-            print("\(tcArray)")
-        }
-        
-        return VStack {
+        VStack {
             List {
                 ForEach(timecardArray, id: \.self) { timecard in
-                    Section("\(timecard.employee.name) - \(timecard.employee.employeeId)") {
+                    Button(action: {
+                        employeeModel.selectTimecard(timecard)
+                        self.showTimecardManagementSheet = true
+                    }) {
+                        Text("\(timecard.employee.name) (\(timecard.employee.employeeId))")
+                            .fontWeight(.bold)
+                            .font(.headline) // Adjust font size, e.g., .title, .largeTitle, or .system(size: 24)
+                            .padding(.all)
                         
-                        ForEach(0..<timecard.numOfEvents(), id: \.self) { index in
-                            // For both of the scenarios I use the Time.dateView function
-                            // to present the dates in the most readable format for users
-                            if (index % 2 == 0) {
-                                Text("**Clocked In |** \(Time.dateView(timecard.timecardEvents[index]))")
-                            } else {
-                                Text("**Clocked Out |** \(Time.dateView(timecard.timecardEvents[index]))")
-                                Text("**Total Shift Length: \(Time.distanceBetween(first: timecard.timecardEvents[index - 1], last: timecard.timecardEvents[index]))**")
-                                    .padding(.bottom)
-                            }
-                            
-                        }
                     }
-                    .headerProminence(.increased)
                 }
             }
+            .listStyle(.insetGrouped)
         }
-        .navigationTitle("\(departmentModel.simpleDate(date))")
+        .navigationTitle("\(departmentModel.simpleDate(date)) Timecards")
+        .sheet(isPresented: $showTimecardManagementSheet) {
+            TimecardManagementView(showSheet: $showTimecardManagementSheet, employeeModel.getSelectedTimecard()!)
+                .presentationDetents(.init([.large]))
+                .presentationDragIndicator(.visible)
+        }
+        .onAppear(perform: {
+            Task {
+                await self.timecardArray = departmentModel.getTimecards(dept: dept, date: date)
+            }
+        })
     }
 }
 

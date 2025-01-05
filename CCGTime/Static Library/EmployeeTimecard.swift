@@ -15,20 +15,21 @@ struct EmployeeTimecard: Codable, Hashable {
     @DocumentID var id: String?
     var employee: Employee
     var timecardEvents: [Date]
+    var timecardEdits: [String]
     var shiftLength: Double = 0.0
     
     init(id: String, emp: Employee) {
         self.id = id
         self.employee = emp
         self.timecardEvents = []
+        self.timecardEdits = []
     }
-    
-    /* Required code to make the EmployeeTimecard struct Codable and Hashable */
     
     private enum CodingKeys: String, CodingKey {
         case employee
         case timecardEvents
         case shiftLength
+        case timecardEdits
     }
     
     public func numOfEvents() -> Int {
@@ -74,6 +75,44 @@ struct EmployeeTimecard: Codable, Hashable {
             print("Error: Failed to upload updated timecard to Firestore")
             return false
         }
+    }
+    
+    @MainActor public mutating func editTimecard(events: [Date], deptModel: DepartmentModel) throws {
+        
+        for i in 1...events.count-1 {
+            
+            if events[i] < events[i-1] {
+                throw TimecardError.runtimeError("Timecard events must be in ascending order")
+            } else if events[i] > Date() {
+                throw TimecardError.runtimeError("Timecard events cannot be in the future")
+            }
+        }
+        
+        self.timecardEvents = events
+        self.calculateShiftLength()
+        
+        let _ = deptModel.addTimecard(timecard: self, date: events.first!)
+    }
+    
+    private mutating func calculateShiftLength() {
+        
+        self.shiftLength = 0
+        
+        for i in 0...self.timecardEvents.count-1 {
+            if i%2 == 1 {
+                let clockIn = self.timecardEvents[i-1]
+                let clockOut = self.timecardEvents[i]
+                
+                let shiftTimeInSeconds = clockOut.timeIntervalSince(clockIn)
+                let shiftTimeInHours = shiftTimeInSeconds / 3600
+                self.shiftLength += shiftTimeInHours
+            }
+        }
+        
+    }
+    
+    enum TimecardError: Error {
+        case runtimeError(String)
     }
     
     public func getTimeClockedOut() -> String {

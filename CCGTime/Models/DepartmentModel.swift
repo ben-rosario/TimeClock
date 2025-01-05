@@ -215,32 +215,35 @@ import OrderedCollections
         }
     }
     
-    public func getTimes(dept department: String, date: String, completion: @escaping (_ timecard: [EmployeeTimecard]) -> Void) {
+    public func getTimecards(dept department: String, date: String) async -> [EmployeeTimecard] {
 
         var timecards: [EmployeeTimecard] = []
-        let docRef = db.collection("users").document(uid).collection("departments")
+        
+        let docRef = db.collection("users")
+                       .document(uid)
+                       .collection("departments")
                        .document(department)
                        .collection("dates")
                        .document(date)
                        .collection("times")
 
-        docRef.getDocuments() { snapshot, error in
-            guard error == nil else {
-                print("Error adding the snapshot listener:  \(error!.localizedDescription)")
-                return
-            }
+        do {
+            let querySnapshot = try await docRef.getDocuments()
             
-            snapshot!.documents.forEach({ document in
-                do {
-                    let decodedTimecard = try document.data(as: EmployeeTimecard.self)
-                    timecards.append(decodedTimecard)
-                }
-                catch {
-                  print("Error trying to decode Timecard: \(error)")
-                }
-            })
-            completion(timecards)
+            for document in querySnapshot.documents {
+                let tc = try document.data(as: EmployeeTimecard.self)
+                timecards.append(tc)
+            }
+            return timecards
+            
+        } catch (let error) {
+            print("DepartmentModel.getTimecards() error: \(error.localizedDescription)")
+            return timecards
         }
+        
+        //let decodedTimecard = try document.data(as: EmployeeTimecard.self)
+        //timecards.append(decodedTimecard)
+       
     }
     
     // Gets the earliest recorded clock-in date in YYYYMMDD and returns a Date object with the same timestamp.

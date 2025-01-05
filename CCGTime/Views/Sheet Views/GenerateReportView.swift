@@ -22,12 +22,31 @@ struct GenerateReportView: View {
     @State private var waitingForReport = false
     @State private var report: Report?
     
+    let yesterday: Date
+    
     @Binding var showGenerateReportAlert: Bool
     @Binding var selectedStartDate: Date
     @Binding var selectedEndDate: Date
     @Binding var selectedDepartment: String
     
     public var earliestDate: Date
+    
+    init(showGenerateReportAlert: Binding<Bool>, selectedStartDate: Binding<Date>, selectedEndDate: Binding<Date>, selectedDepartment: Binding<String>, earliestDate: Date) {
+        self._showGenerateReportAlert = showGenerateReportAlert
+        self._selectedStartDate = selectedStartDate
+        self._selectedEndDate = selectedEndDate
+        self._selectedDepartment = selectedDepartment
+        self.earliestDate = earliestDate
+        
+        yesterday = Calendar.current.date(
+            byAdding: .day,
+          value: -1,
+          to: Date())!
+        
+        if earliestDate > yesterday {
+            self.earliestDate = yesterday
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -61,14 +80,14 @@ struct GenerateReportView: View {
             DatePicker(
                 "Start Date",
                 selection: $selectedStartDate,
-                in: earliestDate...Date(),
+                in: earliestDate...yesterday,
                 displayedComponents: [.date]
             )
             
             DatePicker(
                 "End Date",
                 selection: $selectedEndDate,
-                in: selectedStartDate...Date(),
+                in: selectedStartDate...yesterday,
                 displayedComponents: [.date]
             )
             

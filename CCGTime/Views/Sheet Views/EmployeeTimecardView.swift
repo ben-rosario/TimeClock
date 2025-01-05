@@ -23,9 +23,9 @@ struct EmployeeTimecardView: View {
     
     // View will always default to user's current date
     init(showSheet: Binding<Bool>, _ tc: EmployeeTimecard) {
+        self._showSheet = showSheet
         self.timecard = tc
         self.employee = tc.employee
-        self._showSheet = showSheet
         
         // Set colors for gradient
         let color1 = Color(hex: 0x12C2E9)

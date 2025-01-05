@@ -53,6 +53,16 @@ import SwiftUICore
         }
     }
     
+    private var selectedTimecard: EmployeeTimecard?
+    
+    public func selectTimecard(_ timecard: EmployeeTimecard) {
+        self.selectedTimecard = timecard
+    }
+    
+    public func getSelectedTimecard() -> EmployeeTimecard? {
+        return self.selectedTimecard
+    }
+    
     public func stringFromDate(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd"
