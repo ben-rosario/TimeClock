@@ -374,7 +374,6 @@ import OrderedCollections
             }
         }
         return employeesWorked
-        
     }
     
     // Returns an array with the Employee IDs who worked on the given date
@@ -416,9 +415,7 @@ import OrderedCollections
     }
     
     public func createReport(start startDate: Date, end endDate: Date, for dept: String, name: String) async -> Void {
-        Task {
-            self.report = await Report(start: startDate, end: endDate, for: dept, name: name, deptModel: self)
-        }
+        self.report = await Report(start: startDate, end: endDate, for: dept, name: name, deptModel: self)
     }
     
     public func reportIsCompleted() -> Bool {
@@ -453,10 +450,9 @@ import OrderedCollections
         return allEmployees[id]
     }
     
+    // Returns the hours worked on the current day in hours, as a Double
     public func hoursWorked(for emp: Employee, on date: Date) async -> Double {
         let dateString = String(self.int32FromDate(date))
-        
-        var timeWorked: Double = 0.0
         
         do {
             let dateRef = db.collection("users")
@@ -466,38 +462,12 @@ import OrderedCollections
                             .collection("dates")
                             .document(dateString)
                             .collection("times")
+            
             let dateDocument = try await dateRef.document(emp.employeeId).getDocument()
             let timecard = try dateDocument.data(as: EmployeeTimecard.self)
             
-            var clockedIn: Date = timecard.timecardEvents[0]
-            var clockedOut: Date = timecard.timecardEvents[1]
-            
-            var i = 0
-            for event in timecard.timecardEvents {
-                
-                
-                // Check if this is a clock-in event
-                if i%2 == 0 {
-                    // If so, then mark beginning
-                    clockedIn = event
-                } else {
-                    // If this is a clock-out event, find the time difference and add it to timeWorked
-                    clockedOut = event
-                    
-                    let timeIntervalInSeconds = clockedOut.timeIntervalSince(clockedIn)
-                    let timeIntervalInMins: Double = Double(timeIntervalInSeconds) / 60.0
-                    let timeIntervalInHours: Double = timeIntervalInMins / 60.0
-                    timeWorked += Double(round(100*timeIntervalInHours)/100)
-                }
-                i+=1
-            }
-            return timeWorked
-            
-            
-        } catch (let error) {
-            // TODO: fix this annoying shit below
-            // The data couldn't be read because it is missing
-            print("Error: \(error.localizedDescription)")
+            return timecard.getShiftLength()
+        } catch {
             return 0.0
         }
     }

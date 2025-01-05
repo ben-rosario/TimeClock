@@ -207,6 +207,7 @@ struct ManagerView: View {
                 Button(action: authModel.authenticate, label: {
                     Text("Unlock Manager View")
                         .font(.system(.title2))
+                        .fontWeight(.bold)
                 })
                     .padding()
                     .background(.blue)

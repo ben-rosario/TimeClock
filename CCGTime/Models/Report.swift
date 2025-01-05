@@ -122,7 +122,8 @@ class Report {
         reportDataFormat.font(size: 11)
         reportDataFormat.font(name: "Arial")
         reportDataFormat.border(style: .thin)
-        
+        reportDataFormat.set(num_format: "0.00")
+        reportDataFormat.align(horizontal: .center)
         // Report Money Formatting (e.g. '$1.00')
         reportMoneyFormat.font(size: 11)
         reportMoneyFormat.font(name: "Arial")
@@ -141,6 +142,7 @@ class Report {
         reportGrandTotalTitleFormat.font(size: 11)
         reportGrandTotalTitleFormat.font(name: "Arial")
         reportGrandTotalTitleFormat.border(style: .thin)
+        reportGrandTotalTitleFormat.set(num_format: "0.00")
         
         // Report Sum Total Formatting
         reportSumFormat.bold()
@@ -148,6 +150,7 @@ class Report {
         reportSumFormat.font(name: "Arial")
         reportSumFormat.border(style: .thin)
         reportSumFormat.align(horizontal: .center)
+        reportSumFormat.set(num_format: "0.00")
         
         // Change the directory to the app's default Documents path
         FileManager.default.changeCurrentDirectoryPath(documentsUrl.path)

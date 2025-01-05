@@ -85,10 +85,45 @@ struct EmployeeTimecard: Codable, Hashable {
         return timeDiff
     }
     
-    public func getShiftLength() -> String {
+    // Returns Double (as hours)
+    public func getShiftLength() -> Double {
+        // Check if the employee is current clocked out
+        if self.timecardEvents.count % 2 == 0 {
+            // If the employee is clocked out, just return the shiftLength variable
+            // shiftLength should always be update to date if the employee is clocked out
+            let time = self.shiftLength
+            return time
+        }
+        
+        let currentShiftLength = Date() - self.timecardEvents.last!
+        
+        let oldShiftLengthInHours = TimeInterval(self.shiftLength)
+        let oldShiftLengthInMinutes = oldShiftLengthInHours * 60
+        let oldShiftLengthInSeconds = oldShiftLengthInMinutes * 60
+        
+        let updatedShiftLength = currentShiftLength + oldShiftLengthInSeconds
+        
+        return updatedShiftLength
+    }
+    
+    // Returns Formatted String
+    public func getShiftLengthString() -> String {
         let dcf = DateComponentsFormatter()
         dcf.allowedUnits = [.hour, .minute]
         dcf.unitsStyle = .full
+        
+        // Check if the employee is currently clocked out
+        if self.timecardEvents.count % 2 == 0 {
+            // If the employee is clocked out, just return the shiftLength variable
+            // shiftLength should always be update to date if the employee is clocked out
+            let shiftLengthInHours = TimeInterval(self.shiftLength)
+            let shiftLengthInMinutes = shiftLengthInHours * 60
+            let shiftLengthInSeconds = shiftLengthInMinutes * 60
+            
+            // TimeIntervals are measured in seconds, so we need to convert our
+            // shiftLength var from hours to seconds
+            return dcf.string(from: shiftLengthInSeconds)!
+        }
         
         let currentShiftLength = Date() - self.timecardEvents.last!
         

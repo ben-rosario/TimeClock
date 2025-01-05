@@ -48,11 +48,11 @@ struct EmployeeTimecardView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
         } else if timecard.isClockedIn() != true {
-            Text("You worked \(timecard.getShiftLength()) today. \n\nYou have been clocked out for \(timecard.getTimeClockedOut()).")
+            Text("You worked \(timecard.getShiftLengthString()) today. \n\nYou have been clocked out for \(timecard.getTimeClockedOut()).")
                 .font(.title2)
                 .fontWeight(.semibold)
         } else {
-            Text("You have been working for \(timecard.getShiftLength()).")
+            Text("You have been working for \(timecard.getShiftLengthString()).")
                 .font(.title2)
                 .fontWeight(.semibold)
         }

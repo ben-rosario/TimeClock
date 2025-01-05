@@ -38,15 +38,3 @@ struct DepartmentView: View {
         .navigationTitle(dept)
     }
 }
-
-
-
-/*
- 
- struct DepartmentView_Previews: PreviewProvider {
-     static var previews: some View {
-         DepartmentView(session: SessionStore(), dept: "MargaritaVille")
-     }
- }
- 
- */
