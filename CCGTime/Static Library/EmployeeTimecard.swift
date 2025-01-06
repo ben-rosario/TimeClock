@@ -17,12 +17,14 @@ struct EmployeeTimecard: Codable, Hashable {
     var timecardEvents: [Date]
     var timecardEdits: [String]
     var shiftLength: Double = 0.0
+    var date: Date
     
     init(id: String, emp: Employee) {
         self.id = id
         self.employee = emp
         self.timecardEvents = []
         self.timecardEdits = []
+        self.date = Date()
     }
     
     private enum CodingKeys: String, CodingKey {
@@ -30,6 +32,7 @@ struct EmployeeTimecard: Codable, Hashable {
         case timecardEvents
         case shiftLength
         case timecardEdits
+        case date
     }
     
     public func numOfEvents() -> Int {

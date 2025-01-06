@@ -28,13 +28,23 @@ struct DepartmentView: View {
         return VStack(alignment: .center) {
             
             List {
+                timecardDates
+            }
+        }
+        .navigationTitle(dept)
+    }
+    
+    var timecardDates: some View {
+        Section("Timecard Dates") {
+            if !dateArray.isEmpty {
                 ForEach(dateArray, id: \.self) { item in
                     NavigationLink(destination: DateView(dept: dept, date: item)) {
                         Text(departmentModel.fancyDate(item))
                     }
                 }
+            } else {
+                Text("No timecards found")
             }
         }
-        .navigationTitle(dept)
     }
 }

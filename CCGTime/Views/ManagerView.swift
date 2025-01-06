@@ -16,31 +16,39 @@ struct IdentifiableView: Identifiable {
 
 struct ManagerView: View {
     
+    /* Environment Objects */
     @EnvironmentObject var user: SessionStore
     @EnvironmentObject var departmentModel: DepartmentModel
     @EnvironmentObject var employeeModel: EmployeeModel
     
-    @State private var showingArchiveAlert = false
+    /* Authentication Object */
+    @StateObject var authModel = AuthModel()
+    
+    /* Alert Variables */
+    @State private var showingArchiveDeptAlert = false
+    @State private var showingArchiveEmpAlert = false
     @State private var showingUnarchiveAlert = false
     @State private var showingDeleteAlert = false
-    @State private var currentDept: String = ""
-    @State private var nextView: IdentifiableView? = nil
     
+    /* Sheet Variables */
+    @State private var showAccountSettingsSheet = false
     @State private var showGenerateReportSheet = false
-    @State private var showGenerateReportError = false
-    
     @State private var showAddNewEmployeeSheet = false
+    @State private var showArchiveSheet = false
+    
+    /* Error Variables */
+    @State private var showGenerateReportError = false
     @State private var showCreateEmployeeError = false
     
-    @State private var showAccountSettingsSheet = false
-    
+    /* Miscellaneous View Variables */
     @State private var selectedStartDate = Date()
     @State private var selectedEndDate = Date()
     @State private var selectedDepartment: String = ""
+    @State private var nextView: IdentifiableView? = nil
+    @State private var currentDept: String = ""
+    @State private var currentEmp: String = ""
     
-    @StateObject var authModel = AuthModel()
-    
-    // Set Colors for button gradient
+    /* Colors for gradient */
     private let color1 = Color(hex: 0x3494E6)
     private let color2 = Color(hex: 0xEC6EAD)
     
@@ -53,21 +61,27 @@ struct ManagerView: View {
                     }
                 }
             } else {
-                Text("**No Employees Are Clocked In**")
+                Text("No Employees Are Clocked In")
             }
         }
-        
     }
     
-    var employeeSection: some View {
+    var allEmployeesSection: some View {
         Section("All Employees") {
             
-            ForEach(employeeModel.employeeIdStrings, id: \.self) { item in
+            ForEach(departmentModel.unarchivedEmpStrings, id: \.self) { item in
                 
                 let empName = employeeModel.getName(id: item, withId: false)
                 
                 NavigationLink(destination: EmployeeManagementView(employeeId: item)) {
                     Text(empName)
+                        .swipeActions(allowsFullSwipe: false) {
+                            Button("Archive") {
+                                currentEmp = item
+                                showingArchiveEmpAlert = true
+                            }
+                        }
+                        .tint(.red)
                 }
             }
         }
@@ -78,38 +92,14 @@ struct ManagerView: View {
             ForEach(departmentModel.deptStrings, id: \.self) { item in
                 
                 NavigationLink(destination: DepartmentView(dept: item)) {
-                    Text(item)
+                    Text("**\(item)**")
                         .swipeActions(allowsFullSwipe: false) {
                             Button("Archive") {
                                 currentDept = item
-                                showingArchiveAlert = true
+                                showingArchiveDeptAlert = true
                             }
                         }
                         .tint(.red)
-                }
-            }
-        }
-    }
-    
-    var archivedDepartmentsSection: some View {
-        Section("Archived Departments") {
-            ForEach(departmentModel.archiveStrings, id: \.self) { item in
-                NavigationLink(destination: DepartmentView(dept: item)) {
-                    Text(item)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button("Delete") {
-                                currentDept = item
-                                showingDeleteAlert = true
-                            }
-                            .tint(.red)
-                        }
-                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                            Button("Unarchive") {
-                                currentDept = item
-                                showingUnarchiveAlert = true
-                            }
-                            .tint(.blue)
-                        }
                 }
             }
         }
@@ -128,8 +118,7 @@ struct ManagerView: View {
                     List {
                         activeEmployeesSection
                         currentDepartmentsSection
-                        employeeSection
-                        archivedDepartmentsSection
+                        allEmployeesSection
                     }
                     .alert(Text("Error"), isPresented: $showGenerateReportError) {} message: {
                         Text("You have no timesheets created yet, you cannot generate a report")
@@ -152,7 +141,7 @@ struct ManagerView: View {
                     // Confirmation dialogue for archive button
                     .confirmationDialog(
                         "Are you sure you want to archive \'\(currentDept)\'?",
-                        isPresented: $showingArchiveAlert,
+                        isPresented: $showingArchiveDeptAlert,
                         titleVisibility: .visible
                     ) {
                         Button("Archive") {
@@ -161,15 +150,14 @@ struct ManagerView: View {
                             }
                         }
                     }
-                    // Confirmation Dialogue for unarchive button
                     .confirmationDialog(
-                        "Are you sure you want to unarchive \'\(currentDept)\'?",
-                        isPresented: $showingUnarchiveAlert,
+                        "Are you sure you want to archive Employee \'\(currentEmp)\'?",
+                        isPresented: $showingArchiveEmpAlert,
                         titleVisibility: .visible
                     ) {
-                        Button("Unarchive") {
+                        Button("Archive") {
                             withAnimation {
-                                departmentModel.unarchiveDepartment(currentDept)
+                                employeeModel.archiveEmployee(currentEmp)
                             }
                         }
                     }
@@ -186,17 +174,21 @@ struct ManagerView: View {
                         selectedDepartment: $selectedDepartment,
                         earliestDate: departmentModel.earliestDate!
                     )
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents([.large])
                     .presentationDragIndicator(.visible)
                 }
                 .sheet(isPresented: $showAddNewEmployeeSheet) {
                     AddEmployeeView(showAddNewEmployeeSheet: $showAddNewEmployeeSheet)
-                        .presentationDetents([.medium, .large])
+                        .presentationDetents([.large])
+                        .presentationDragIndicator(.visible)
+                }
+                .sheet(isPresented: $showArchiveSheet) {
+                    ArchiveView(showArchiveSheet: $showArchiveSheet)
                         .presentationDragIndicator(.visible)
                 }
                 .sheet(isPresented: $showAccountSettingsSheet) {
                     AccountView(showAccountSettingsSheet: $showAccountSettingsSheet)
-                        .presentationDetents([.large, .medium])
+                        .presentationDetents([.large])
                         .presentationDragIndicator(.visible)
                 }
                 .navigationTitle("Management")
@@ -205,7 +197,7 @@ struct ManagerView: View {
                         Menu("Tools") {
                             
                             // Create New Department button
-                            Button("Create New Department", systemImage: "note.text.badge.plus") {
+                            Button("Create Department", systemImage: "note.text.badge.plus") {
                                 Alert.newDept(departmentModel: departmentModel)
                             }
                                         
@@ -227,8 +219,12 @@ struct ManagerView: View {
                                 }
                             }
                             
+                            Button("Archive", systemImage: "archivebox") {
+                                showArchiveSheet = true
+                            }
+                            
                             // Account Settings button
-                            Button("Account Settings", systemImage: "gearshape.fill") {
+                            Button("Settings", systemImage: "gearshape") {
                                 showAccountSettingsSheet = true
                             }
                             

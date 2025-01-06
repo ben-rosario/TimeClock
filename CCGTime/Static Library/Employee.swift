@@ -17,6 +17,7 @@ struct Employee: Codable, Hashable {
     var wage: Double
     var department: String
     var employeeId: String
+    var archived: Bool
     
     private enum CodingKeys: String, CodingKey {
         case firstName
@@ -25,6 +26,7 @@ struct Employee: Codable, Hashable {
         case wage
         case department
         case employeeId
+        case archived
     }
     
     init(firstName: String, lastName: String, wage: Double, department: String, employeeId: String) {
@@ -34,5 +36,6 @@ struct Employee: Codable, Hashable {
         self.department = department
         self.name = "\(firstName) \(lastName)"
         self.employeeId = employeeId
+        self.archived = false
     }
 }

@@ -16,14 +16,21 @@ import OrderedCollections
     private var uid: String
     private var db: Firestore
     
-    var departments = [Department]()
-    var departmentArray = [Department]()
-    var allEmployees = [String:Employee]()
     var earliestDate: Date?
     
-    @Published var activeTimecards: [EmployeeTimecard] = []
+    var departments = [Department]()
     @Published var deptStrings = [String]()
-    @Published var archiveStrings = [String]()
+        
+    
+    
+    @Published var activeTimecards: [EmployeeTimecard] = []
+    
+    @Published var allEmployees = [String:Employee]()
+    @Published var unarchivedEmpStrings = [String]()
+    
+    @Published var archivedDeptStrings = [String]()
+    @Published var archivedEmpStrings = [String]()
+
     @Published var reportLoading: Bool = false
     @Published var report: Report?
     
@@ -35,7 +42,9 @@ import OrderedCollections
     
     private func loadData() async {
         
-        // Add listener for active employees collection
+        /*                                                  */
+        /*   Add listener for active employees collection   */
+        /*                                                  */
         db.collection("users").document(uid).collection("active_employees").addSnapshotListener() { (querySnapshot, error) in
             guard error == nil else {
                 print("Error adding the snapshot listener: \(error!.localizedDescription)")
@@ -57,10 +66,41 @@ import OrderedCollections
                 print("Error decoding Employee document: \(error)")
             }
         }
+        
+        /*                                           */
+        /*   Add listener for employees collection   */
+        /*                                           */
+        db.collection("users").document(uid).collection("employees").whereField("archived", isEqualTo: false).addSnapshotListener() { (querySnapshot, error) in
+            guard error == nil else {
+                print("Error adding the snapshot listener: \(error!.localizedDescription)")
+                return
+            }
+            
+            var newEmployees: [String:Employee] = [:]
+            var newUnarchivedEmpStrings: [String] = []
+            
+            do {
+                for document in querySnapshot!.documents {
+                    let newEmp = try document.data(as: Employee.self)
+                    
+                    newEmployees[newEmp.employeeId] = newEmp
+                    newUnarchivedEmpStrings.append(newEmp.employeeId)
+                }
+                
+                self.allEmployees = newEmployees
+                self.unarchivedEmpStrings = newUnarchivedEmpStrings
+                
+            } catch (let error) {
+                print("Error decoding Employee document: \(error)")
+            }
+        }
 
         
-        // Add listener for departments collection
-        db.collection("users").document(uid).collection("departments").addSnapshotListener() { (querySnapshot, error) in
+        /*                                             */
+        /*   Add listener for departments collection   */
+        /*                                             */
+        
+        db.collection("users").document(uid).collection("departments").whereField("archived", isEqualTo: false).addSnapshotListener() { (querySnapshot, error) in
             guard error == nil else {
                 print("Error adding the snapshot listener: \(error!.localizedDescription)")
                 return
@@ -79,43 +119,29 @@ import OrderedCollections
             self.deptStrings = newDeptStrings
         }
         
-        // Add listener for archive collection
-        db.collection("users").document(uid).collection("archive").addSnapshotListener() { (querySnapshot, error) in
+        /*                                         */
+        /*   Add listener for archive collection   */
+        /*                                         */
+        db.collection("users").document(uid).collection("departments").whereField("archived", isEqualTo: true).addSnapshotListener() { (querySnapshot, error) in
             guard error == nil else {
                 print("Error adding the snapshot listener: \(error!.localizedDescription)")
                 return
             }
-            self.departmentArray = []
-            self.archiveStrings = []
-            
+
+            var newArchivedStrings: [String] = []
             // there are querySnapshot!.documents.count documents in the spots snapshot
+            
             for document in querySnapshot!.documents {
                 let dept = Department(name: document.documentID)
-                self.departmentArray.append(dept)
-                self.archiveStrings.append(dept.name)
+                
+                newArchivedStrings.append(dept.name)
             }
+            
+            
+            self.archivedDeptStrings = newArchivedStrings
         }
         
         
-        do {
-            let employees = try await db.collection("users").document(uid).collection("employees").getDocuments()
-            
-            
-            for employee in employees.documents {
-                let firstName = employee.get("firstName") as! String
-                let lastName = employee.get("lastName") as! String
-                let wage = employee.get("wage") as! Double
-                let department = employee.get("department") as! String
-                let id = employee.documentID
-                
-                let newEmployee = Employee(firstName: firstName, lastName: lastName, wage: wage, department: department, employeeId: id)
-                
-                self.allEmployees[id] = newEmployee
-            }
-            
-        } catch (let error){
-            print("Error Creating DepartmentModel allEmployees Array: \(error)")
-        }
     }
     
     public func getReportProgress() ->  Double {
@@ -131,7 +157,7 @@ import OrderedCollections
         dateFormatter.dateFormat = "yyyyMMdd"
         let newDate: Date = dateFormatter.date(from: date) ?? Date.distantPast
         
-        dateFormatter.dateFormat = "MMM d yyyy"
+        dateFormatter.dateFormat = "MMM d, yyyy"
         let simpleDateString: String = dateFormatter.string(from: newDate)
         
         return simpleDateString
@@ -153,43 +179,21 @@ import OrderedCollections
         print("Archiving Department: \(name)")
         
         // Add 'deleted' field for sorting purposes
-        self.db.collection("users")
-            .document(uid)
-               .collection("departments")
-               .document(name)
-               .updateData(["deleted" : FirebaseFirestore.Timestamp.init()])
-        
-        let deptRef = self.db.collection("users").document(uid).collection("departments").document(name)
-        let archiveRef = self.db.collection("users").document(uid).collection("archive").document(name)
-
-        deptRef.getDocument() { document, err in
-            if err != nil { return }
-            
-            archiveRef.setData(document?.data() ?? ["Document was nil" : ""])
-            
-        }
-        
-        let datesRef = deptRef.collection("dates")
-        datesRef.getDocuments() { (snapshot, err) in
-            if let err = err {
-                print("Error getting documents: \(err.localizedDescription)")
-                return
-            }
-
-            guard let snapshot = snapshot else { return }
-
-            snapshot.documents.forEach({ (document) in
-                let data = document.data()
-                let docID = document.documentID
-                archiveRef.collection("users").document(self.uid).collection("dates").document(docID).setData(data)
-            })
-        }
-        deptRef.delete()
+        let dept = db.collection("users")
+                     .document(uid)
+                     .collection("departments")
+                     .document(name)
+               
+        dept.updateData(["archived": true])
     }
     
     public func unarchiveDepartment(_ name: String) {
-        //TODO: Create function
-        print("Unarchiving department: \(name)")
+        let dept = db.collection("users")
+                     .document(uid)
+                     .collection("departments")
+                     .document(name)
+        
+        dept.updateData(["archived": false])
     }
     
     public func deleteDepartment(_ name: String) {
@@ -213,13 +217,15 @@ import OrderedCollections
         let db = Firestore.firestore()
         
         // Add document to collection
-        db.collection("users").document(uid).collection("departments")
-            .document(departmentName)
+        let newDept = db.collection("users")
+                        .document(uid)
+                        .collection("departments")
+                        .document(departmentName)
         
         // Add 'created' field for sorting purposes
-        db.collection("users").document(uid).collection("departments")
-            .document(departmentName)
-            .setData(["created" : FirebaseFirestore.Timestamp.init()])
+        newDept.setData(["created" : FirebaseFirestore.Timestamp.init()])
+        newDept.setData(["archived" : false])
+        
     }
     
     public func getDates(dept department: String, completion: @escaping (_ dates: [String]) -> Void) {

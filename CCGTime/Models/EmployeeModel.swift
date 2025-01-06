@@ -11,9 +11,13 @@ import SwiftUICore
 
 @MainActor class EmployeeModel: ObservableObject {
     
+    
+    // employees array is ALL employees, archived and unarchived.
     @Published var employees: [String:Employee] = [:]
     @Published var employeeNameStrings: [String] = []
     @Published var employeeIdStrings: [String] = []
+    
+    @Published var archivedEmployeeStrings: [String] = []
     
     public var uid: String
     private var db: Firestore
@@ -30,8 +34,9 @@ import SwiftUICore
     
     private func loadData() async {
         
-                
-        // Add listener for employees collection
+        /*                                          */
+        /*   Add listener for employee collection   */
+        /*                                          */
         db.collection("users").document(uid).collection("employees").addSnapshotListener() { (querySnapshot, error) in
             guard error == nil else {
                 print("Error adding the snapshot listener: \(error!.localizedDescription)")
@@ -54,6 +59,33 @@ import SwiftUICore
                 self.employees = newEmployees
                 self.employeeNameStrings = newEmployeeNameStrings
                 self.employeeIdStrings = newEmployeeIdStrings
+                
+            } catch (let error) {
+                print("Error decoding Employee document: \(error)")
+            }
+        }
+        
+        
+        
+        /*                                                   */
+        /*   Add listener for archived employee collection   */
+        /*                                                   */
+        db.collection("users").document(uid).collection("employees").whereField("archived", isEqualTo: true).addSnapshotListener() { (querySnapshot, error) in
+            guard error == nil else {
+                print("Error adding the snapshot listener: \(error!.localizedDescription)")
+                return
+            }
+            
+            var newArchivedEmployeeStrings: [String] = []
+            
+            do {
+                for document in querySnapshot!.documents {
+                    let newEmp = try document.data(as: Employee.self)
+                    
+                    newArchivedEmployeeStrings.append(newEmp.employeeId)
+                }
+                
+                self.archivedEmployeeStrings = newArchivedEmployeeStrings
                 
             } catch (let error) {
                 print("Error decoding Employee document: \(error)")
@@ -121,5 +153,23 @@ import SwiftUICore
         catch {
             print("Error when trying to encode Employee: \(error)")
         }
+    }
+    
+    public func archiveEmployee(_ name: String) {
+        let dept = db.collection("users")
+                     .document(uid)
+                     .collection("employees")
+                     .document(name)
+        
+        dept.updateData(["archived": true])
+    }
+    
+    public func unarchiveEmployee(_ name: String) {
+        let dept = db.collection("users")
+                     .document(uid)
+                     .collection("employees")
+                     .document(name)
+        
+        dept.updateData(["archived": false])
     }
 }
