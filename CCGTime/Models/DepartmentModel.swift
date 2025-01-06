@@ -21,6 +21,7 @@ import OrderedCollections
     var allEmployees = [String:Employee]()
     var earliestDate: Date?
     
+    @Published var activeTimecards: [EmployeeTimecard] = []
     @Published var deptStrings = [String]()
     @Published var archiveStrings = [String]()
     @Published var reportLoading: Bool = false
@@ -33,20 +34,49 @@ import OrderedCollections
     }
     
     private func loadData() async {
+        
+        // Add listener for active employees collection
+        db.collection("users").document(uid).collection("active_employees").addSnapshotListener() { (querySnapshot, error) in
+            guard error == nil else {
+                print("Error adding the snapshot listener: \(error!.localizedDescription)")
+                return
+            }
+            
+            var newActiveTimecards: [EmployeeTimecard] = []
+            
+            do {
+                for document in querySnapshot!.documents {
+                    let newTc = try document.data(as: EmployeeTimecard.self)
+                    
+                    newActiveTimecards.append(newTc)
+                }
+                
+                self.activeTimecards = newActiveTimecards
+                
+            } catch (let error) {
+                print("Error decoding Employee document: \(error)")
+            }
+        }
+
+        
         // Add listener for departments collection
         db.collection("users").document(uid).collection("departments").addSnapshotListener() { (querySnapshot, error) in
             guard error == nil else {
                 print("Error adding the snapshot listener: \(error!.localizedDescription)")
                 return
             }
-            self.departments = []
-            self.deptStrings = []
+            var newDepartments: [Department] = []
+            var newDeptStrings: [String] = []
             // there are querySnapshot!.documents.count documents in the spots snapshot
+            
             for document in querySnapshot!.documents {
                 let dept = Department(name: document.documentID)
-                self.departments.append(dept)
-                self.deptStrings.append(dept.name)
+                newDepartments.append(dept)
+                newDeptStrings.append(dept.name)
             }
+            
+            self.departments = newDepartments
+            self.deptStrings = newDeptStrings
         }
         
         // Add listener for archive collection
@@ -279,8 +309,9 @@ import OrderedCollections
                 deptsChecked += 1
                 
                 if deptsChecked == self.deptStrings.count {
-                    let earliestDate = self.dateFromInt32(earliestInt)!
-                    self.earliestDate = earliestDate
+                    if let earliestDate = self.dateFromInt32(earliestInt) {
+                        self.earliestDate = earliestDate
+                    }
                 }
             }
                 
@@ -521,18 +552,46 @@ import OrderedCollections
                         .document(tc.employee.department)
                         .collection("dates")
                         .document(dateStr)
-                        
+        
         datesRef.setData(["visible":true])
         
         let timecardsRef = datesRef.collection("times")
         
+        let activeEmployeesRef = db.collection("users")
+                                   .document(uid)
+                                   .collection("active_employees")
+                                   .whereField("shiftLength", isGreaterThanOrEqualTo: 0)
+        
+        let activeEmployeesCollection = db.collection("users").document(uid).collection("active_employees")
+        
         do {
             try timecardsRef.document(tc.employee.employeeId).setData(from: tc)
             self.currentTimecard = tc
+        
+            // Add / Remove Employee from Active Section
+            if tc.timecardEvents.count % 2 == 0 {
+                
+                activeEmployeesRef.getDocuments { (querySnapshot, error) in
+                    querySnapshot?.documents.forEach { document in
+                        do {
+                            let activeTc = try document.data(as: EmployeeTimecard.self)
+                            
+                            if activeTc.employee.employeeId == tc.employee.employeeId {
+                                document.reference.delete()
+                            }
+                        } catch (let error) {
+                            print("Error adding new timecard to Firestore: \(error)")
+                        }
+                    }
+                }
+            } else {
+                try activeEmployeesCollection.document(tc.employee.employeeId).setData(from: tc)
+            }
             return true
         } catch (let error){
             print("Error adding new timecard to Firestore: \(error)")
             return false
         }
+        
     }
 }

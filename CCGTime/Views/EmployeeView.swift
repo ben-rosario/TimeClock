@@ -52,6 +52,7 @@ struct EmployeeView: View {
                         EmployeeTimecardView(showSheet: $showTimecardSheet, departmentModel.currentTimecard!)
                             .presentationDetents([.fraction(0.45)])
                             .presentationDragIndicator(.hidden)
+                        
                     } else {
                         Text("Error Creating Timecard!")
                     }
@@ -74,7 +75,7 @@ struct EmployeeView: View {
         .background(
             RoundedRectangle(cornerRadius: 7.5)
                 .strokeBorder(.blue, lineWidth: 2)
-                .scaleEffect(1.75)
+                .scaleEffect(1.3)
         )
         //.frame(width: 200)
         .fixedSize()
@@ -122,6 +123,7 @@ struct EmployeeView: View {
                     // Set the departmentModel.currentTimecard variable
                     await departmentModel.getTimecard(emp: foundEmployee!, dateStr: dateString)
                     self.showTimecardSheet = true
+                    self.kbFocused = false
                 }
                 // Display error alert when hasCorrectInfo is false
                 else {

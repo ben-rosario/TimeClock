@@ -17,80 +17,62 @@ struct LoginView: View {
     
     var body: some View {
         NavigationView {
-            VStack(alignment: .center, spacing: 25) {
+           VStack {
+                Text("Log In to TimeClock")
+                   .frame(alignment: .top)
+                   .font(.system(.title,
+                                 design: .rounded,
+                                 weight: .bold))
                 
-                ZStack {
-                    
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.cyan)
-                        .frame(width: 999, height: 350)
-                    
-                    VStack {
-                        
-                        Text("Log In to TimeClock")
-                            .font(.system(size: 36))
-                            .bold()
-                            .foregroundStyle(Color.white)
-                        
-                        Spacer()
-                            .frame(height: 50)
-                        
-                        TextField("Email", text: $email)
-                            .frame(width: 200, height: 30)
-                            .keyboardType(.emailAddress)
-                            .background(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .strokeBorder(.blue, lineWidth: 2.25)
-                                    .scaleEffect(1.25)
-                            )
-                        
-                        Spacer()
-                            .frame(height: 18)
-                        
-                        SecureField("Password", text: $password)
-                            .frame(width: 200, height: 30)
-                            .background(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .strokeBorder(.blue, lineWidth: 2.25)
-                                    //.fill(Color.blue)
-                                    .scaleEffect(1.25)
-                            )
-                    }
-                    // end VStack 2
-                    
-                }
-                
-                Spacer()
-                    .frame(height: 1)
-                
-                Button("Log In") {
-                    user.signIn(email: email, password: password)
-                }
-                .foregroundColor(Color.white)
-                .background(
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.black)
-                        .scaleEffect(2.6)
-                )
-                
-                
-                Spacer()
-                    .frame(height: 5)
-                
-                HStack {
-                    
-                    Text("Don't have an account?")
-                    
-                    NavigationLink(destination: SignupView()) {
-                            Text("Sign up")
-                                .underline()
-                                .foregroundColor(Color.blue)
-                    }
-                }
-                
+               VStack {
+                   userDetailsForm
+                   loginButton
+               }
+               .frame(height: 400)
+               
+               HStack {
+                   Text("Don't have an account?")
+                       //.padding(.horizontal)
+                   NavigationLink(destination: SignupView()) {
+                           Text("Sign up")
+                               .underline()
+                               .foregroundColor(Color.blue)
+                   }
+                   .padding(.horizontal)
+               }
+               .padding(.top)
+               .frame(alignment: .bottom)
             }
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
         }
+    }
+    
+    var loginButton: some View {
+        Button(action: {
+            user.signIn(email: email, password: password)
+        }) {
+            Text("Login")
+                .fontWeight(.bold)
+                .font(.title)
+                .foregroundColor(.white)
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 15)
+                .fill(Color.blue)
+                .scaleEffect(1.5)
+        )
+        
+    }
+    
+    var userDetailsForm: some View {
+        Form {
+            TextField("Email", text: $email)
+                .keyboardType(.emailAddress)
+                .padding(.all)
+            
+            SecureField("Password", text: $password)
+                .padding(.all)
+        }
+        .frame(height: 250)
     }
     
 }

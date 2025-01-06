@@ -19,6 +19,7 @@ import Combine
     @Published var employeeModel: EmployeeModel?
     @Published var user: User?
     @Published var activeSession: Bool?
+    @Published var created = false
     
     var uid: String?
     var handle: AuthStateDidChangeListenerHandle?
@@ -42,12 +43,16 @@ import Combine
                 Task {
                     await self.createDeptModel(with: user.uid)
                     await self.createEmpModel(with: user.uid)
+                    self.created = true
                 }
                 
             } else {
-                self.activeSession = false
                 print("User has no active session")
+                self.activeSession = false
+                created = true
             }
+            
+            
         }
     }
     

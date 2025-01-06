@@ -27,7 +27,11 @@ struct ManagerView: View {
     @State private var nextView: IdentifiableView? = nil
     
     @State private var showGenerateReportSheet = false
+    @State private var showGenerateReportError = false
+    
     @State private var showAddNewEmployeeSheet = false
+    @State private var showCreateEmployeeError = false
+    
     @State private var showAccountSettingsSheet = false
     
     @State private var selectedStartDate = Date()
@@ -40,8 +44,18 @@ struct ManagerView: View {
     private let color1 = Color(hex: 0x3494E6)
     private let color2 = Color(hex: 0xEC6EAD)
     
+    var activeEmployeesSection: some View {
+        Section("Active Employees") {
+            ForEach(departmentModel.activeTimecards, id: \.self) { activeTc in
+                NavigationLink(destination: ActiveTimecardManagementView(activeTc)) {
+                    Text("**\(activeTc.employee.name)**  \nWorking for \(activeTc.getShiftLengthString())")
+                }
+            }
+        }
+    }
+    
     var employeeSection: some View {
-        Section("Employees") {
+        Section("All Employees") {
             
             ForEach(employeeModel.employeeIdStrings, id: \.self) { item in
                 
@@ -55,7 +69,7 @@ struct ManagerView: View {
     }
     
     var currentDepartmentsSection: some View {
-        Section("Current Departments") {
+        Section("Departments") {
             ForEach(departmentModel.deptStrings, id: \.self) { item in
                 
                 NavigationLink(destination: DepartmentView(dept: item)) {
@@ -107,9 +121,16 @@ struct ManagerView: View {
                 VStack(alignment: .center) {
                     
                     List {
+                        activeEmployeesSection
                         currentDepartmentsSection
-                        archivedDepartmentsSection
                         employeeSection
+                        archivedDepartmentsSection
+                    }
+                    .alert(Text("Error"), isPresented: $showGenerateReportError) {} message: {
+                        Text("You have no timesheets created yet, you cannot generate a report")
+                    }
+                    .alert(Text("Error"), isPresented: $showCreateEmployeeError) {} message: {
+                        Text("You must create a department before you can create employees")
                     }
                     // Confirmation dialogue for delete button
                     .confirmationDialog(
@@ -185,12 +206,20 @@ struct ManagerView: View {
                                         
                             // Generate Report button
                             Button("Generate Report", systemImage: "tablecells") {
-                                showGenerateReportSheet = true
+                                if let _ = departmentModel.earliestDate {
+                                    showGenerateReportSheet = true
+                                } else {
+                                    showGenerateReportError = true
+                                }
                             }
                             
                             // Add New Employee button
                             Button("Add New Employee", systemImage: "person.badge.plus") {
-                                showAddNewEmployeeSheet = true
+                                if departmentModel.deptStrings.count > 0 {
+                                    showAddNewEmployeeSheet = true
+                                } else {
+                                    showCreateEmployeeError = true
+                                }
                             }
                             
                             // Account Settings button

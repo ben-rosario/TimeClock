@@ -30,26 +30,34 @@ import SwiftUICore
     
     private func loadData() async {
         
-        do {
-            let employees = try await db.collection("users").document(uid).collection("employees").getDocuments()
-            
-            for employee in employees.documents {
-                let id = employee.documentID
-                let firstName = employee.get("firstName") as! String
-                let lastName = employee.get("lastName") as! String
-                let wage = employee.get("wage") as! Double
-                let department = employee.get("department") as! String
                 
-                let fullName = "\(firstName) \(lastName)"
-                self.employeeNameStrings.append(fullName)
-                
-                self.employeeIdStrings.append(id)
-                
-                self.employees[id] = Employee(firstName: firstName, lastName: lastName,  wage: wage, department: department, employeeId: id)
+        // Add listener for employees collection
+        db.collection("users").document(uid).collection("employees").addSnapshotListener() { (querySnapshot, error) in
+            guard error == nil else {
+                print("Error adding the snapshot listener: \(error!.localizedDescription)")
+                return
             }
             
-        } catch (let error) {
-            print("Error adding EmployeeModel snapshot listener: \(error.localizedDescription)")
+            var newEmployees: [String:Employee] = [:]
+            var newEmployeeNameStrings: [String] = []
+            var newEmployeeIdStrings: [String] = []
+            
+            do {
+                for document in querySnapshot!.documents {
+                    let newEmp = try document.data(as: Employee.self)
+                    
+                    newEmployees[newEmp.employeeId] = newEmp
+                    newEmployeeNameStrings.append(newEmp.name)
+                    newEmployeeIdStrings.append(newEmp.employeeId)
+                }
+                
+                self.employees = newEmployees
+                self.employeeNameStrings = newEmployeeNameStrings
+                self.employeeIdStrings = newEmployeeIdStrings
+                
+            } catch (let error) {
+                print("Error decoding Employee document: \(error)")
+            }
         }
     }
     
@@ -94,12 +102,11 @@ import SwiftUICore
     }
     
     // TODO: fix error handling in this and AddEmployeeView()
-    func createNewEmployee(firstName: String, lastName: String, id: NumbersOnly, wage: FloatsOnly, department: String) -> Employee {
+    func createNewEmployee(firstName: String, lastName: String, id: NumbersOnly, wage: FloatsOnly, department: String) {
         
-        let docRef = db.collection("users")
+        let empsRef = db.collection("users")
             .document(uid)
             .collection("employees")
-            .document(id.value)
         
         do {
             let employee = Employee(
@@ -109,13 +116,10 @@ import SwiftUICore
                 department: department,
                 employeeId: id.value
             )
-            
-            try docRef.setData(from: employee)
-            return employee
+            try empsRef.document(id.value).setData(from: employee)
         }
         catch {
             print("Error when trying to encode Employee: \(error)")
-            return Employee(firstName: "", lastName: "", wage: 0, department: "", employeeId: "")
         }
     }
 }
