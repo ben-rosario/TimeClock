@@ -25,7 +25,8 @@ import OrderedCollections
     
     @Published var activeTimecards: [EmployeeTimecard] = []
     
-    @Published var allEmployees = [String:Employee]()
+    // MARK: employees dict is all #unarchived# employees
+    @Published var employees = [String:Employee]()
     @Published var unarchivedEmpStrings = [String]()
     
     @Published var archivedDeptStrings = [String]()
@@ -87,7 +88,7 @@ import OrderedCollections
                     newUnarchivedEmpStrings.append(newEmp.employeeId)
                 }
                 
-                self.allEmployees = newEmployees
+                self.employees = newEmployees
                 self.unarchivedEmpStrings = newUnarchivedEmpStrings
                 
             } catch (let error) {
@@ -475,7 +476,7 @@ import OrderedCollections
     }
     
     public func getName(_ id: String) -> String {
-        let employee = allEmployees[id]
+        let employee = employees[id]
         if employee == nil {
             return "No Name Assigned to #\(id)"
         }
@@ -487,7 +488,7 @@ import OrderedCollections
     }
     
     public func getEmployee(_ id: String) -> Employee? {
-        return allEmployees[id]
+        return employees[id]
     }
     
     // Returns the hours worked on the current day in hours, as a Double
@@ -514,7 +515,7 @@ import OrderedCollections
     
     public func hasCorrectInfo(empId id: String, dept givenDept: String) -> Bool {
         // First check if any employee has this ID
-        if let e = self.allEmployees[id] {
+        if let e = self.employees[id] {
             // If so, check that the Employee is also assigned to the given department
             if e.department == givenDept {
                 return true

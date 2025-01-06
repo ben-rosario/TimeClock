@@ -83,10 +83,16 @@ struct EmployeeTimecard: Codable, Hashable {
     @MainActor public mutating func editTimecard(events: [Date], deptModel: DepartmentModel) throws {
         
         if events.count == 1 {
-            // If there is only one Timecard event, the changed input will always be right
-            if !deptModel.addTimecard(timecard: self, date: events.first!) {
+            // If there is only one Timecard event we just need to make
+            // sure that the time is before right now
+            if events[0] < Date() {
+                if !deptModel.addTimecard(timecard: self, date: events.first!) {
+                    throw TimecardError.runtimeError("Error saving Timecard to Firestore")
+                }
+            } else {
                 throw TimecardError.runtimeError("Error saving Timecard to Firestore")
             }
+            
             return
         }
         

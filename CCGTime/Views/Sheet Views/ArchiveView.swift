@@ -86,10 +86,10 @@ struct ArchiveView: View {
             if !employeeModel.archivedEmployeeStrings.isEmpty {
                 ForEach(employeeModel.archivedEmployeeStrings, id: \.self) { empId in
                     NavigationLink(destination: EmployeeManagementView(employeeId: empId)) {
-                        Text(employeeModel.employees[empId]!.name)
+                        Text(employeeModel.allEmployees[empId]!.name)
                             .swipeActions(edge: .leading, allowsFullSwipe: false) {
                                 Button("Unarchive") {
-                                    currentEmp = employeeModel.employees[empId]!
+                                    currentEmp = employeeModel.allEmployees[empId]!
                                     showingUnarchiveEmpAlert = true
                                 }
                                 .tint(.blue)

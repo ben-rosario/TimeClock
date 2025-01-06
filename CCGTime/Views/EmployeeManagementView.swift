@@ -20,7 +20,7 @@ struct EmployeeManagementView: View {
     
     var body: some View {
         
-        let employee = employeeModel.employees[employeeId]
+        let employee = employeeModel.allEmployees[employeeId]
         let employeeName: String = employee?.name ?? "ERROR | Name was nil"
         let employeeDept: String = employee?.department ?? "ERROR | Department was nil"
         

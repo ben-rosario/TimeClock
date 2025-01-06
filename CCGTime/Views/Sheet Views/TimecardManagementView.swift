@@ -56,7 +56,8 @@ struct TimecardManagementView: View {
         NavigationView {
             VStack {
                 employeeStatus
-                    .padding(.vertical)
+                    .padding(.all)
+                    .frame(alignment: .center)
                 
                 Text("Total Shift Length: \(timecard.getShiftLengthString())")
                     .padding(.vertical)

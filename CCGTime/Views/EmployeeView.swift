@@ -59,7 +59,7 @@ struct EmployeeView: View {
                     
                 }
             }
-            .navigationTitle("Clock In & Clock Out")
+            .navigationTitle("Timecards")
         }
     }
     
@@ -75,9 +75,8 @@ struct EmployeeView: View {
         .background(
             RoundedRectangle(cornerRadius: 7.5)
                 .strokeBorder(.blue, lineWidth: 2)
-                .scaleEffect(1.3)
+                .scaleEffect(1.75)
         )
-        //.frame(width: 200)
         .fixedSize()
     }
     
@@ -119,7 +118,7 @@ struct EmployeeView: View {
                 
                 if departmentModel.hasCorrectInfo(empId: empNum, dept: selectedDept) {
                     let dateString = departmentModel.stringFromDate(Date())
-                    self.foundEmployee = departmentModel.allEmployees[empNum]
+                    self.foundEmployee = departmentModel.employees[empNum]
                     // Set the departmentModel.currentTimecard variable
                     await departmentModel.getTimecard(emp: foundEmployee!, dateStr: dateString)
                     self.showTimecardSheet = true
@@ -127,7 +126,7 @@ struct EmployeeView: View {
                 }
                 // Display error alert when hasCorrectInfo is false
                 else {
-                    if let _ = departmentModel.allEmployees[empNum] {
+                    if let _ = departmentModel.employees[empNum] {
                         Alert.error("Employee \(empNum) is not assigned to \(selectedDept)")
                     } else {
                         Alert.error("Employee \(empNum) does not exist")

@@ -12,12 +12,13 @@ import SwiftUICore
 @MainActor class EmployeeModel: ObservableObject {
     
     
-    // employees array is ALL employees, archived and unarchived.
-    @Published var employees: [String:Employee] = [:]
-    @Published var employeeNameStrings: [String] = []
-    @Published var employeeIdStrings: [String] = []
+    // MARK: allEmployees dict is really ALL employees, archived and unarchived.
+    @Published var allEmployees = [String:Employee]()
     
-    @Published var archivedEmployeeStrings: [String] = []
+    @Published var employeeNameStrings = [String]()
+    @Published var employeeIdStrings = [String]()
+    
+    @Published var archivedEmployeeStrings = [String]()
     
     public var uid: String
     private var db: Firestore
@@ -56,7 +57,7 @@ import SwiftUICore
                     newEmployeeIdStrings.append(newEmp.employeeId)
                 }
                 
-                self.employees = newEmployees
+                self.allEmployees = newEmployees
                 self.employeeNameStrings = newEmployeeNameStrings
                 self.employeeIdStrings = newEmployeeIdStrings
                 
@@ -111,7 +112,7 @@ import SwiftUICore
     
     func getDept(id: NumbersOnly) -> String {
         let empId = id.value
-        let employee = employees[empId]
+        let employee = allEmployees[empId]
         let empDept: String = employee!.department
         
         return empDept
@@ -120,7 +121,7 @@ import SwiftUICore
     func getName(id: String, withId: Bool) -> String {
         var fullName: String = ""
         
-        if let employee = employees[id] {
+        if let employee = allEmployees[id] {
             let firstName: String = employee.firstName
             let lastName: String = employee.lastName
             
