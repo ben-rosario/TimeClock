@@ -594,4 +594,12 @@ import OrderedCollections
         }
         
     }
+    
+    public func hasActiveTimecards() -> Bool {
+        if self.activeTimecards.isEmpty {
+            return false
+        } else {
+            return true
+        }
+    }
 }

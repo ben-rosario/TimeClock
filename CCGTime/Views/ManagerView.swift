@@ -46,12 +46,17 @@ struct ManagerView: View {
     
     var activeEmployeesSection: some View {
         Section("Active Employees") {
-            ForEach(departmentModel.activeTimecards, id: \.self) { activeTc in
-                NavigationLink(destination: ActiveTimecardManagementView(activeTc)) {
-                    Text("**\(activeTc.employee.name)**  \nWorking for \(activeTc.getShiftLengthString())")
+            if departmentModel.hasActiveTimecards() == true {
+                ForEach(departmentModel.activeTimecards, id: \.self) { activeTc in
+                    NavigationLink(destination: ActiveTimecardManagementView(activeTc)) {
+                        Text("**\(activeTc.employee.name)**  \nWorking for \(activeTc.getShiftLengthString())")
+                    }
                 }
+            } else {
+                Text("**No Employees Are Clocked In**")
             }
         }
+        
     }
     
     var employeeSection: some View {

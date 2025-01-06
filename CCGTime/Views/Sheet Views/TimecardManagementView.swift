@@ -224,13 +224,14 @@ struct ActiveTimecardManagementView: View {
     var body: some View {
         NavigationView {
             VStack {
-                
                 Text("Total Shift Length: \(timecard.getShiftLengthString())")
-                    .padding(.vertical)
+                    .padding(.top)
+                    .fontWeight(.bold)
+                    .font(.headline)
                 
                 showTimecardEvents
             }
-            .navigationTitle("\(dateStr) Timecard")
+            .navigationTitle(timecard.employee.name)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     editButton
@@ -247,6 +248,18 @@ struct ActiveTimecardManagementView: View {
             .alert(Text("Success!"), isPresented: $showSuccessAlert) {} message: {
                 Text("Timecard was updated.")
             }
+        }
+    }
+    
+    var employeeStatus: some View {
+        if timecard.timecardEvents.count % 2 == 0 {
+            Text("\(name) is currently clocked out.")
+                .fontWeight(.bold)
+                .font(.title)
+        } else {
+            Text("\(name) has been clocked in for \(timecard.getShiftLengthString()).")
+                .fontWeight(.bold)
+                .font(.title)
         }
     }
     
