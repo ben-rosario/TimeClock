@@ -1,0 +1,647 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B51AE48C2BD63A44007DC5E1 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51AE48B2BD63A44007DC5E1 /* AccountView.swift */; };
+		B542D32C2D125A6A0028AF29 /* GenerateReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B542D32B2D125A6A0028AF29 /* GenerateReportView.swift */; };
+		B5822F432BC48EBD00B0515E /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5822F422BC48EBD00B0515E /* SignupView.swift */; };
+		B589145B2D1F8DF400A5F3B6 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B589145A2D1F8DF400A5F3B6 /* FirebaseAuth */; };
+		B589145D2D1F8DF800A5F3B6 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = B589145C2D1F8DF800A5F3B6 /* FirebaseDatabase */; };
+		B589145F2D1F8DFC00A5F3B6 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B589145E2D1F8DFC00A5F3B6 /* FirebaseDatabaseSwift */; };
+		B58914612D1F8E0000A5F3B6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B58914602D1F8E0000A5F3B6 /* FirebaseFirestore */; };
+		B58914632D1F8E0500A5F3B6 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B58914622D1F8E0500A5F3B6 /* FirebaseFirestoreSwift */; };
+		B58914652D1F8E1300A5F3B6 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B58914642D1F8E1300A5F3B6 /* FirebaseStorage */; };
+		B58914692D1F8F0900A5F3B6 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = B58914682D1F8F0900A5F3B6 /* Collections */; };
+		B589146B2D1F8F0900A5F3B6 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = B589146A2D1F8F0900A5F3B6 /* OrderedCollections */; };
+		B589146E2D20CC5800A5F3B6 /* libxlsxwriter in Frameworks */ = {isa = PBXBuildFile; productRef = B589146D2D20CC5800A5F3B6 /* libxlsxwriter */; };
+		B59F3CFA2A2AD86A001C3C79 /* EmployeeManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59F3CF92A2AD86A001C3C79 /* EmployeeManagementView.swift */; };
+		B5A457E72A0EE5E300E573FA /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A457E62A0EE5E300E573FA /* Time.swift */; };
+		B5AC55272971DA7A00FF72C6 /* CCGTimeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AC55262971DA7A00FF72C6 /* CCGTimeApp.swift */; };
+		B5AC552B2971DA7C00FF72C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5AC552A2971DA7C00FF72C6 /* Assets.xcassets */; };
+		B5AC55812971FEBE00FF72C6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B5AC55802971FEBE00FF72C6 /* GoogleService-Info.plist */; };
+		B5B02E192D20D1560073003E /* xlsxwriter in Frameworks */ = {isa = PBXBuildFile; productRef = B5B02E182D20D1560073003E /* xlsxwriter */; };
+		B5B02E1B2D211B670073003E /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B02E1A2D211B670073003E /* Report.swift */; };
+		B5BB2EDA2BFD908600D12910 /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BB2ED92BFD908600D12910 /* AuthModel.swift */; };
+		B5BC0A042D2C534D003B6AD9 /* ActiveTimecardManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0A032D2C534D003B6AD9 /* ActiveTimecardManagementView.swift */; };
+		B5BC0A082D2C58E8003B6AD9 /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC0A072D2C58E8003B6AD9 /* ArchiveView.swift */; };
+		B5D0F0DA2BC382EA000E1D05 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D0F0D92BC382EA000E1D05 /* User.swift */; };
+		B5D0F0DC2BC38543000E1D05 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D0F0DB2BC38543000E1D05 /* LoginView.swift */; };
+		B5E396BB2972037800EDCDE7 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396AA2972037800EDCDE7 /* Alert.swift */; };
+		B5E396BC2972037800EDCDE7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396AC2972037800EDCDE7 /* ViewController.swift */; };
+		B5E396BD2972037800EDCDE7 /* ManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396AD2972037800EDCDE7 /* ManagerView.swift */; };
+		B5E396BF2972037800EDCDE7 /* DepartmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396AF2972037800EDCDE7 /* DepartmentView.swift */; };
+		B5E396C02972037800EDCDE7 /* AddEmployeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396B02972037800EDCDE7 /* AddEmployeeView.swift */; };
+		B5E396C12972037800EDCDE7 /* EmployeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396B12972037800EDCDE7 /* EmployeeView.swift */; };
+		B5E396C22972037800EDCDE7 /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396B22972037800EDCDE7 /* DateView.swift */; };
+		B5E396C32972037800EDCDE7 /* DepartmentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396B42972037800EDCDE7 /* DepartmentModel.swift */; };
+		B5E396C42972037800EDCDE7 /* EmployeeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396B52972037800EDCDE7 /* EmployeeModel.swift */; };
+		B5E396C52972037800EDCDE7 /* EmployeeTimecard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396B72972037800EDCDE7 /* EmployeeTimecard.swift */; };
+		B5E396C82972037800EDCDE7 /* Employee.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E396BA2972037800EDCDE7 /* Employee.swift */; };
+		B5EC7C5E2D289C7B005517F1 /* Department.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EC7C5D2D289C76005517F1 /* Department.swift */; };
+		B5EC7C602D28A6C2005517F1 /* EmployeeTimecardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EC7C5F2D28A6C2005517F1 /* EmployeeTimecardView.swift */; };
+		B5EC7C642D2A96C1005517F1 /* TimecardManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EC7C632D2A96C1005517F1 /* TimecardManagementView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B51AE48B2BD63A44007DC5E1 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		B542D32B2D125A6A0028AF29 /* GenerateReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateReportView.swift; sourceTree = "<group>"; };
+		B5822F422BC48EBD00B0515E /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+		B59F3CF92A2AD86A001C3C79 /* EmployeeManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeManagementView.swift; sourceTree = "<group>"; };
+		B5A457E62A0EE5E300E573FA /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		B5AC55232971DA7A00FF72C6 /* CCGTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CCGTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5AC55262971DA7A00FF72C6 /* CCGTimeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCGTimeApp.swift; sourceTree = "<group>"; };
+		B5AC552A2971DA7C00FF72C6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B5AC55802971FEBE00FF72C6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B5B02E1A2D211B670073003E /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Report.swift; sourceTree = "<group>"; };
+		B5B02E1C2D21E6A50073003E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B5BB2ED92BFD908600D12910 /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
+		B5BC0A032D2C534D003B6AD9 /* ActiveTimecardManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveTimecardManagementView.swift; sourceTree = "<group>"; };
+		B5BC0A072D2C58E8003B6AD9 /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
+		B5D0F0D92BC382EA000E1D05 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		B5D0F0DB2BC38543000E1D05 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		B5E396AA2972037800EDCDE7 /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		B5E396AC2972037800EDCDE7 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B5E396AD2972037800EDCDE7 /* ManagerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagerView.swift; sourceTree = "<group>"; };
+		B5E396AF2972037800EDCDE7 /* DepartmentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepartmentView.swift; sourceTree = "<group>"; };
+		B5E396B02972037800EDCDE7 /* AddEmployeeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddEmployeeView.swift; sourceTree = "<group>"; };
+		B5E396B12972037800EDCDE7 /* EmployeeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmployeeView.swift; sourceTree = "<group>"; };
+		B5E396B22972037800EDCDE7 /* DateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
+		B5E396B42972037800EDCDE7 /* DepartmentModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepartmentModel.swift; sourceTree = "<group>"; };
+		B5E396B52972037800EDCDE7 /* EmployeeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmployeeModel.swift; sourceTree = "<group>"; };
+		B5E396B72972037800EDCDE7 /* EmployeeTimecard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmployeeTimecard.swift; sourceTree = "<group>"; };
+		B5E396BA2972037800EDCDE7 /* Employee.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Employee.swift; sourceTree = "<group>"; };
+		B5EC7C5D2D289C76005517F1 /* Department.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Department.swift; sourceTree = "<group>"; };
+		B5EC7C5F2D28A6C2005517F1 /* EmployeeTimecardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeTimecardView.swift; sourceTree = "<group>"; };
+		B5EC7C632D2A96C1005517F1 /* TimecardManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimecardManagementView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B5AC55202971DA7A00FF72C6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B589145F2D1F8DFC00A5F3B6 /* FirebaseDatabaseSwift in Frameworks */,
+				B589146E2D20CC5800A5F3B6 /* libxlsxwriter in Frameworks */,
+				B589145D2D1F8DF800A5F3B6 /* FirebaseDatabase in Frameworks */,
+				B58914692D1F8F0900A5F3B6 /* Collections in Frameworks */,
+				B58914612D1F8E0000A5F3B6 /* FirebaseFirestore in Frameworks */,
+				B589146B2D1F8F0900A5F3B6 /* OrderedCollections in Frameworks */,
+				B58914652D1F8E1300A5F3B6 /* FirebaseStorage in Frameworks */,
+				B589145B2D1F8DF400A5F3B6 /* FirebaseAuth in Frameworks */,
+				B5B02E192D20D1560073003E /* xlsxwriter in Frameworks */,
+				B58914632D1F8E0500A5F3B6 /* FirebaseFirestoreSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B58914662D1F8E8E00A5F3B6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B5AC551A2971DA7A00FF72C6 = {
+			isa = PBXGroup;
+			children = (
+				B5AC55252971DA7A00FF72C6 /* CCGTime */,
+				B5E396B62972037800EDCDE7 /* Models */,
+				B5E396AB2972037800EDCDE7 /* Views */,
+				B5E396A92972037800EDCDE7 /* Static Library */,
+				B5AC55242971DA7A00FF72C6 /* Products */,
+				B58914662D1F8E8E00A5F3B6 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		B5AC55242971DA7A00FF72C6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B5AC55232971DA7A00FF72C6 /* CCGTime.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B5AC55252971DA7A00FF72C6 /* CCGTime */ = {
+			isa = PBXGroup;
+			children = (
+				B5B02E1C2D21E6A50073003E /* Info.plist */,
+				B5AC55262971DA7A00FF72C6 /* CCGTimeApp.swift */,
+				B5AC55802971FEBE00FF72C6 /* GoogleService-Info.plist */,
+				B5AC552A2971DA7C00FF72C6 /* Assets.xcassets */,
+			);
+			path = CCGTime;
+			sourceTree = "<group>";
+		};
+		B5BB2EDB2C0EA3A800D12910 /* Sheet Views */ = {
+			isa = PBXGroup;
+			children = (
+				B5BC0A072D2C58E8003B6AD9 /* ArchiveView.swift */,
+				B5EC7C632D2A96C1005517F1 /* TimecardManagementView.swift */,
+				B5BC0A032D2C534D003B6AD9 /* ActiveTimecardManagementView.swift */,
+				B5EC7C5F2D28A6C2005517F1 /* EmployeeTimecardView.swift */,
+				B51AE48B2BD63A44007DC5E1 /* AccountView.swift */,
+				B5E396B02972037800EDCDE7 /* AddEmployeeView.swift */,
+				B542D32B2D125A6A0028AF29 /* GenerateReportView.swift */,
+			);
+			path = "Sheet Views";
+			sourceTree = "<group>";
+		};
+		B5D0F0DD2BC38548000E1D05 /* Onboarding Views */ = {
+			isa = PBXGroup;
+			children = (
+				B5D0F0DB2BC38543000E1D05 /* LoginView.swift */,
+				B5822F422BC48EBD00B0515E /* SignupView.swift */,
+			);
+			path = "Onboarding Views";
+			sourceTree = "<group>";
+		};
+		B5E396A92972037800EDCDE7 /* Static Library */ = {
+			isa = PBXGroup;
+			children = (
+				B5E396B72972037800EDCDE7 /* EmployeeTimecard.swift */,
+				B5E396BA2972037800EDCDE7 /* Employee.swift */,
+				B5E396AA2972037800EDCDE7 /* Alert.swift */,
+				B5A457E62A0EE5E300E573FA /* Time.swift */,
+			);
+			name = "Static Library";
+			path = "CCGTime/Static Library";
+			sourceTree = "<group>";
+		};
+		B5E396AB2972037800EDCDE7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B5BB2EDB2C0EA3A800D12910 /* Sheet Views */,
+				B5D0F0DD2BC38548000E1D05 /* Onboarding Views */,
+				B5E396AC2972037800EDCDE7 /* ViewController.swift */,
+				B5E396AD2972037800EDCDE7 /* ManagerView.swift */,
+				B5E396AF2972037800EDCDE7 /* DepartmentView.swift */,
+				B5E396B12972037800EDCDE7 /* EmployeeView.swift */,
+				B5E396B22972037800EDCDE7 /* DateView.swift */,
+				B59F3CF92A2AD86A001C3C79 /* EmployeeManagementView.swift */,
+			);
+			name = Views;
+			path = CCGTime/Views;
+			sourceTree = "<group>";
+		};
+		B5E396B62972037800EDCDE7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B5E396B42972037800EDCDE7 /* DepartmentModel.swift */,
+				B5EC7C5D2D289C76005517F1 /* Department.swift */,
+				B5B02E1A2D211B670073003E /* Report.swift */,
+				B5E396B52972037800EDCDE7 /* EmployeeModel.swift */,
+				B5D0F0D92BC382EA000E1D05 /* User.swift */,
+				B5BB2ED92BFD908600D12910 /* AuthModel.swift */,
+			);
+			name = Models;
+			path = CCGTime/Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B5AC55222971DA7A00FF72C6 /* CCGTime */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5AC55472971DA7D00FF72C6 /* Build configuration list for PBXNativeTarget "CCGTime" */;
+			buildPhases = (
+				B5AC551F2971DA7A00FF72C6 /* Sources */,
+				B5AC55202971DA7A00FF72C6 /* Frameworks */,
+				B5AC55212971DA7A00FF72C6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CCGTime;
+			productName = CCGTime;
+			productReference = B5AC55232971DA7A00FF72C6 /* CCGTime.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B5AC551B2971DA7A00FF72C6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					B5AC55222971DA7A00FF72C6 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = B5AC551E2971DA7A00FF72C6 /* Build configuration list for PBXProject "CCGTime" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B5AC551A2971DA7A00FF72C6;
+			packageReferences = (
+				B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				B58914672D1F8F0900A5F3B6 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				B589146C2D20CC5800A5F3B6 /* XCRemoteSwiftPackageReference "libxlsxwriter" */,
+				B5B02E172D20D1560073003E /* XCRemoteSwiftPackageReference "xlsxwriter.swift" */,
+			);
+			productRefGroup = B5AC55242971DA7A00FF72C6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B5AC55222971DA7A00FF72C6 /* CCGTime */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B5AC55212971DA7A00FF72C6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5AC55812971FEBE00FF72C6 /* GoogleService-Info.plist in Resources */,
+				B5AC552B2971DA7C00FF72C6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B5AC551F2971DA7A00FF72C6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5E396C22972037800EDCDE7 /* DateView.swift in Sources */,
+				B5E396BB2972037800EDCDE7 /* Alert.swift in Sources */,
+				B5E396C42972037800EDCDE7 /* EmployeeModel.swift in Sources */,
+				B5EC7C602D28A6C2005517F1 /* EmployeeTimecardView.swift in Sources */,
+				B5822F432BC48EBD00B0515E /* SignupView.swift in Sources */,
+				B5BC0A042D2C534D003B6AD9 /* ActiveTimecardManagementView.swift in Sources */,
+				B5A457E72A0EE5E300E573FA /* Time.swift in Sources */,
+				B542D32C2D125A6A0028AF29 /* GenerateReportView.swift in Sources */,
+				B59F3CFA2A2AD86A001C3C79 /* EmployeeManagementView.swift in Sources */,
+				B5D0F0DC2BC38543000E1D05 /* LoginView.swift in Sources */,
+				B5B02E1B2D211B670073003E /* Report.swift in Sources */,
+				B5D0F0DA2BC382EA000E1D05 /* User.swift in Sources */,
+				B5E396BC2972037800EDCDE7 /* ViewController.swift in Sources */,
+				B5E396C32972037800EDCDE7 /* DepartmentModel.swift in Sources */,
+				B5E396C52972037800EDCDE7 /* EmployeeTimecard.swift in Sources */,
+				B5E396C82972037800EDCDE7 /* Employee.swift in Sources */,
+				B5E396C12972037800EDCDE7 /* EmployeeView.swift in Sources */,
+				B5EC7C642D2A96C1005517F1 /* TimecardManagementView.swift in Sources */,
+				B5E396C02972037800EDCDE7 /* AddEmployeeView.swift in Sources */,
+				B5E396BF2972037800EDCDE7 /* DepartmentView.swift in Sources */,
+				B5EC7C5E2D289C7B005517F1 /* Department.swift in Sources */,
+				B51AE48C2BD63A44007DC5E1 /* AccountView.swift in Sources */,
+				B5E396BD2972037800EDCDE7 /* ManagerView.swift in Sources */,
+				B5BC0A082D2C58E8003B6AD9 /* ArchiveView.swift in Sources */,
+				B5AC55272971DA7A00FF72C6 /* CCGTimeApp.swift in Sources */,
+				B5BB2EDA2BFD908600D12910 /* AuthModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		B5AC55452971DA7D00FF72C6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		B5AC55462971DA7D00FF72C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				USE_HEADERMAP = NO;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B5AC55482971DA7D00FF72C6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"CCGTime/Preview Content\"";
+				DEVELOPMENT_TEAM = 6C57F64YFS;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CCGTime/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "To protect the manager section of the app.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"icucore\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"CFNetwork\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.benros.CCGTime;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		B5AC55492971DA7D00FF72C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"CCGTime/Preview Content\"";
+				DEVELOPMENT_TEAM = 6C57F64YFS;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CCGTime/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "To protect the manager section of the app.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"icucore\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"CFNetwork\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.benros.CCGTime;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USE_HEADERMAP = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B5AC551E2971DA7A00FF72C6 /* Build configuration list for PBXProject "CCGTime" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B5AC55452971DA7D00FF72C6 /* Debug */,
+				B5AC55462971DA7D00FF72C6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B5AC55472971DA7D00FF72C6 /* Build configuration list for PBXNativeTarget "CCGTime" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B5AC55482971DA7D00FF72C6 /* Debug */,
+				B5AC55492971DA7D00FF72C6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B58914672D1F8F0900A5F3B6 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.4;
+			};
+		};
+		B589146C2D20CC5800A5F3B6 /* XCRemoteSwiftPackageReference "libxlsxwriter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jmcnamara/libxlsxwriter.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+		B5B02E172D20D1560073003E /* XCRemoteSwiftPackageReference "xlsxwriter.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/damuellen/xlsxwriter.swift.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B589145A2D1F8DF400A5F3B6 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		B589145C2D1F8DF800A5F3B6 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		B589145E2D1F8DFC00A5F3B6 /* FirebaseDatabaseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabaseSwift;
+		};
+		B58914602D1F8E0000A5F3B6 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		B58914622D1F8E0500A5F3B6 /* FirebaseFirestoreSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestoreSwift;
+		};
+		B58914642D1F8E1300A5F3B6 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5AC55652971FA5400FF72C6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		B58914682D1F8F0900A5F3B6 /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B58914672D1F8F0900A5F3B6 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+		B589146A2D1F8F0900A5F3B6 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B58914672D1F8F0900A5F3B6 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		B589146D2D20CC5800A5F3B6 /* libxlsxwriter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B589146C2D20CC5800A5F3B6 /* XCRemoteSwiftPackageReference "libxlsxwriter" */;
+			productName = libxlsxwriter;
+		};
+		B5B02E182D20D1560073003E /* xlsxwriter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5B02E172D20D1560073003E /* XCRemoteSwiftPackageReference "xlsxwriter.swift" */;
+			productName = xlsxwriter;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = B5AC551B2971DA7A00FF72C6 /* Project object */;
+}
