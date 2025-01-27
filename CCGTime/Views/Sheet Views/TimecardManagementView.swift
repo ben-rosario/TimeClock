@@ -14,6 +14,7 @@ struct TimecardManagementView: View {
     @EnvironmentObject var employeeModel: EmployeeModel
     
     @Binding var showSheet: Bool
+    var isNotification: Bool
     
     @State private var showFailureAlert = false
     @State private var showSuccessAlert = false
@@ -30,13 +31,13 @@ struct TimecardManagementView: View {
     let tf = DateFormatter()
     let dateStr: String
     
-    init(showSheet: Binding<Bool> ,_ timecard: EmployeeTimecard) {
+    init(showSheet: Binding<Bool> ,_ timecard: EmployeeTimecard, isNotification: Bool) {
         df.dateStyle = .medium
         df.timeStyle = .none
         df.timeZone = .current
         
         tf.dateStyle = .none
-        tf.timeStyle = .long
+        tf.timeStyle = .short
         tf.timeZone = .current
         
         self._showSheet = showSheet
@@ -49,7 +50,7 @@ struct TimecardManagementView: View {
         //self.date = timecard.date
         self.dateStr = df.string(from: timecard.date)
         
-        
+        self.isNotification = isNotification
     }
     
     var body: some View {
@@ -128,9 +129,15 @@ struct TimecardManagementView: View {
     
     var employeeStatus: some View {
         if timecard.timecardEvents.count % 2 == 0 {
-            Text("\(name) is currently clocked out.")
-                .fontWeight(.bold)
-                .font(.title)
+            if isNotification == true {
+                Text("\(name) was automatically clocked out at \(tf.string(from: timecard.timecardEvents.last!)) - please update the clock out time.")
+                    .fontWeight(.bold)
+                    .font(.title3)
+            } else {
+                Text("\(name) is currently clocked out.")
+                    .fontWeight(.bold)
+                    .font(.title)
+            }
         } else {
             Text("\(name) is currently clocked in.")
                 .fontWeight(.bold)
@@ -152,29 +159,30 @@ struct TimecardManagementView: View {
                         .disabled(!isEditing)
                         
                         
-                        /*
-                        HStack {
-                            Text("Clocked In: ")
-                            Text(tf.string(from: timecard.timecardEvents[index]))
-                        }
-                         */
+                        
                     } else {
-                        DatePicker(
-                            "Clocked Out: ",
-                            selection: $timecard.timecardEvents[index],
-                            displayedComponents: .hourAndMinute
-                        )
-                        .datePickerStyle(.compact)
-                        .disabled(!isEditing)
-                        
-                        
-                        
-                        /*
-                        HStack {
-                            //Text("Clocked Out: ")
-                            //Text(tf.string(from: timecard.timecardEvents[index]))
+                        if (isNotification == true && index == timecard.timecardEvents.count - 1) {
+                            DatePicker(
+                                "Clocked Out: ",
+                                selection: $timecard.timecardEvents[index],
+                                displayedComponents: .hourAndMinute
+                            )
+                            .datePickerStyle(.compact)
+                            .disabled(!isEditing)
+                            .background(
+                                Color.red.opacity(0.20)
+                                    .cornerRadius(6)
+                            )
+                        } else {
+                            DatePicker(
+                                "Clocked Out: ",
+                                selection: $timecard.timecardEvents[index],
+                                displayedComponents: .hourAndMinute
+                            )
+                            .datePickerStyle(.compact)
+                            .disabled(!isEditing)
                         }
-                         */
+                        
                     }
                 }
             } else {

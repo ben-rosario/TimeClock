@@ -9,27 +9,27 @@ import SwiftUI
 
 struct AccountView: View {
     
+    
+    
     @EnvironmentObject var user: SessionStore
+    @EnvironmentObject var departmentModel: DepartmentModel
     
     @Binding var showAccountSettingsSheet: Bool
+    @State private var showTimezoneChangeError = false
     
     @State private var signoutAlert = false
     @State private var signoutConfirmation: Bool? = nil
     
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Name")
-                    .bold()
-                    .font(.system(size:24))
-                Text(user.user?.displayName ?? "No Name Found")
-                
-                Text("Email")
-                    .bold()
-                    .font(.system(size:24))
-                Text((user.user?.email ?? "No Email Found"))
+            VStack(alignment: .center) {
+                List {
+                    nameInfo
+                    emailInfo
+                    timezoneSetting
+                }
             }
-            .navigationTitle("Account Settings")
+            .navigationTitle("Account Info")
             .navigationBarItems(
                 leading: Button("Back") {
                     showAccountSettingsSheet = false
@@ -48,6 +48,9 @@ struct AccountView: View {
                 }
             } message: {
                 Text("You will be asked to reenter your email and password.")
+            }
+            .alert(Text("Error"), isPresented: $showTimezoneChangeError) {} message: {
+                Text("Employees are currently clocked in. Please try again when all employees are clocked out.")
             }
             .onChange(of: signoutConfirmation) {
                 
@@ -70,6 +73,35 @@ struct AccountView: View {
                     }
                 }
             }
+        }
+    }
+    
+    var nameInfo: some View {
+        Section("Name") {
+            Text(user.user?.displayName ?? "No Name Found")
+        }
+    }
+    
+    var emailInfo: some View {
+        Section("Email") {
+            Text((user.user?.email ?? "No Email Found"))
+        }
+    }
+    
+    var timezoneSetting: some View {
+        Section("Selected Timezone") {
+            Menu(departmentModel.timezone) {
+                ForEach(departmentModel.timezones, id: \.self) { timezone in
+                    Button(timezone) {
+                        if departmentModel.hasActiveTimecards() == false {
+                            departmentModel.updateTimezone(timezone)
+                        } else {
+                            showTimezoneChangeError = true
+                        }
+                    }
+                }
+            }
+            .contentShape(Rectangle())
         }
     }
 }

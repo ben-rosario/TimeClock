@@ -105,6 +105,20 @@ struct ManagerView: View {
         }
     }
     
+    var notificationBanner: some View {
+        return HStack {
+            NavigationLink(destination: NotificationView()) {
+                Text("**You Have \(departmentModel.clockOutNotifications.count) notifications**")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .cornerRadius(12)
+        .transition(.move(edge: .top))
+    }
+    
     var body: some View {
         
         NavigationView {
@@ -116,6 +130,11 @@ struct ManagerView: View {
                 VStack(alignment: .center) {
                     
                     List {
+                        
+                        if !departmentModel.clockOutNotifications.isEmpty {
+                            notificationBanner
+                        }
+                        
                         activeEmployeesSection
                         currentDepartmentsSection
                         allEmployeesSection
@@ -224,7 +243,7 @@ struct ManagerView: View {
                             }
                             
                             // Account Settings button
-                            Button("Settings", systemImage: "gearshape") {
+                            Button("Account", systemImage: "person") {
                                 showAccountSettingsSheet = true
                             }
                             

@@ -168,10 +168,13 @@ struct EmployeeTimecard: Codable, Hashable {
         dcf.allowedUnits = [.hour, .minute]
         dcf.unitsStyle = .full
         
+        // Call getShiftLength to update shiftLength variable
+        let _ = self.getShiftLength()
+        
         // Check if the employee is currently clocked out
         if self.timecardEvents.count % 2 == 0 {
             // If the employee is clocked out, just return the shiftLength variable
-            // shiftLength should always be update to date if the employee is clocked out
+            // shiftLength should always be up to date if the employee is clocked out
             let shiftLengthInHours = TimeInterval(self.shiftLength)
             let shiftLengthInMinutes = shiftLengthInHours * 60
             let shiftLengthInSeconds = shiftLengthInMinutes * 60

@@ -21,7 +21,8 @@ import OrderedCollections
     var departments = [Department]()
     @Published var deptStrings = [String]()
         
-    
+    @Published var timezone: String
+    @Published var timezones: [String]
     
     @Published var activeTimecards: [EmployeeTimecard] = []
     
@@ -31,6 +32,8 @@ import OrderedCollections
     
     @Published var archivedDeptStrings = [String]()
     @Published var archivedEmpStrings = [String]()
+    
+    @Published var clockOutNotifications = [ClockOutNotification]()
 
     @Published var reportLoading: Bool = false
     @Published var report: Report?
@@ -38,10 +41,72 @@ import OrderedCollections
     init(with givenUid: String) async {
         db = Firestore.firestore()
         self.uid = givenUid
+        
+        /*                                     */
+        /*   Initialize 'timezone' variable   */
+        /*                                     */
+        do {
+            let userDoc = try await db.collection("users").document(uid).getDocument().data(as: UserDocument.self)
+            self.timezone = userDoc.timezone
+        } catch (let error) {
+            print("Error: \(error.localizedDescription)")
+            self.timezone = "Error: No Timezone Found"
+        }
+        
+        /*                                     */
+        /*   Initialize 'timezones' variable   */
+        /*                                     */
+        let defaultTimezones = [
+            "America/New_York",
+            "America/Los_Angeles",
+            "America/Chicago",
+            "America/Denver",
+            "debug",
+        ]
+        do {
+            let timezoneMappings = try await db.collection("system-config").document("timezone-mappings").getDocument().data()
+            
+            if let timezoneMaps = timezoneMappings?["timezoneMaps"] as? [String: String] {
+                timezones = Array(timezoneMaps.keys)
+                print("timezones: \(timezones)")
+            } else {
+                timezones = defaultTimezones
+            }
+        } catch (let error) {
+            print("Error: \(error.localizedDescription)")
+            timezones = defaultTimezones
+        }
+        
+        // Create Snapshot Listeners
         await self.loadData()
     }
     
     private func loadData() async {
+            
+        
+        
+        /*                                               */
+        /*   Add listener for notifications collection   */
+        /*                                               */
+        
+        db.collection("users").document(uid).collection("notifications").addSnapshotListener() { (querySnapshot, error) in
+            guard error == nil else {
+                print("Error adding the snapshot listener: \(error!.localizedDescription)")
+                return
+            }
+            
+            var newNotifications: [ClockOutNotification] = []
+            
+            do {
+                for notification in querySnapshot!.documents {
+                    let newNotif = try notification.data(as: ClockOutNotification.self)
+                    newNotifications.append(newNotif)
+                }
+                self.clockOutNotifications = newNotifications
+            } catch (let error) {
+                print("Error decoding ClockOutNotification: \(error)")
+            }
+        }
         
         /*                                                  */
         /*   Add listener for active employees collection   */
@@ -607,6 +672,27 @@ import OrderedCollections
             return false
         } else {
             return true
+        }
+    }
+    
+    public func updateTimezone(_ newTimezone: String) {
+        print("Attempted to update timezone to: \(newTimezone)")
+        db.collection("users").document(uid).updateData(["timezone": newTimezone])
+        self.timezone = newTimezone
+    }
+    
+    public func hasNotifications() -> Bool {
+        return !self.clockOutNotifications.isEmpty
+    }
+    
+    public func notifToTimecard(_ notification: ClockOutNotification) async -> EmployeeTimecard? {
+        do {
+            let timecardPath = notification.timecardRef
+            let timecard = try await db.document(timecardPath).getDocument(as: EmployeeTimecard.self)
+            return timecard
+        } catch (let error) {
+            print("Error decoding timecard from notification: \(error.localizedDescription)")
+            return nil
         }
     }
 }

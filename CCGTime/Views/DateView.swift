@@ -47,7 +47,7 @@ struct DateView: View {
         }
         .navigationTitle("\(departmentModel.simpleDate(date)) Timecards")
         .sheet(isPresented: $showTimecardManagementSheet) {
-            TimecardManagementView(showSheet: $showTimecardManagementSheet, employeeModel.getSelectedTimecard()!)
+            TimecardManagementView(showSheet: $showTimecardManagementSheet, employeeModel.getSelectedTimecard()!, isNotification: false)
                 .presentationDetents(.init([.large]))
                 .presentationDragIndicator(.visible)
         }
